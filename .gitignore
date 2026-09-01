@@ -1,0 +1,19 @@
+# Environment file
+.env
+.env.backup
+.env.production
+
+# Vendor & Node modules
+/vendor/
+/node_modules/
+
+# Logs and cache
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE & Editor files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

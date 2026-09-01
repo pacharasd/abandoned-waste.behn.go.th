@@ -1,0 +1,19 @@
+{
+  "name": "llm-wiki-knowledge-base",
+  "version": "1.0.0",
+  "description": "Persistent Compounding Personal Knowledge Base powered by LLMs and Obsidian",
+  "main": "tools/wiki_tools.js",
+  "scripts": {
+    "status": "node tools/wiki_tools.js status",
+    "lint": "node tools/wiki_tools.js lint",
+    "search": "node tools/wiki_tools.js search"
+  },
+  "keywords": [
+    "llm-wiki",
+    "pkm",
+    "obsidian",
+    "knowledge-base"
+  ],
+  "author": "",
+  "license": "MIT"
+}
