@@ -24,20 +24,19 @@
                     <span class="text-emerald-300/90 text-xs">โครงการจัดการขยะชุมชน</span>
                 </div>
 
-                <!-- Main Impact Heading -->
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.18] text-white">
-                    ระบบแจ้งจัดเก็บ <br class="hidden sm:inline">
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-white drop-shadow-sm">
-                        ขยะไร้บ้าน
-                    </span>
-                    <span class="block text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-100/90 mt-2 font-prompt">
-                        ร่วมสร้างเมืองนนท์สะอาด น่าอยู่ ไร้ขยะตกค้าง
-                    </span>
-                </h1>
+                <!-- Main Impact Heading (Solid, Clean & Sharp) -->
+                <div class="space-y-2">
+                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight text-white">
+                        ระบบแจ้งจัดเก็บขยะไร้บ้าน
+                    </h1>
+                    <p class="text-xl sm:text-2xl font-bold text-white font-prompt">
+                        เทศบาลนครนนทบุรี
+                    </p>
+                </div>
 
                 <!-- Subtitle Description -->
-                <p class="text-sm sm:text-base text-emerald-100/80 max-w-xl font-light leading-relaxed">
-                    พบเห็นจุดทิ้งขยะตกค้าง ขยะชิ้นใหญ่ หรือขยะเน่าเสียในชุมชน สามารถปักหมุดแจ้งเจ้าหน้าที่ได้ทันที พร้อมติดตามผลการเข้าจัดเก็บแบบเรียลไทม์
+                <p class="text-sm sm:text-base text-emerald-100 max-w-xl font-normal leading-relaxed">
+                    ช่วยกันดูแลความสะอาดในเมือง ปักหมุดจุดที่มีขยะตกค้าง ขยะชิ้นใหญ่ หรือขยะเน่าเสีย เจ้าหน้าที่จะได้รับมอบหมายงานและเข้าจัดเก็บอย่างเป็นระบบ พร้อมติดตามสถานะได้แบบเรียลไทม์
                 </p>
 
                 <!-- Action CTA Button Group -->
