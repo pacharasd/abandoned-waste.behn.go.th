@@ -73,25 +73,12 @@ class AdminReportController {
             Response::redirect("/admin/reports/{$id}", 'สถานะไม่ถูกต้อง', 'danger');
         }
 
-        // Handle After Photo Upload if provided
+        // Handle After Image Upload with Strict Magic Bytes & Extension Whitelisting
         $file = Request::file('after_image');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-            $maxSize = 10 * 1024 * 1024;
-
-            if (in_array($file['type'], $allowedTypes) && $file['size'] <= $maxSize) {
-                $uploadDir = BASE_PATH . '/public/uploads/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $newFilename = 'report_after_' . $id . '_' . time() . '.' . $ext;
-                $destination = $uploadDir . $newFilename;
-
-                if (move_uploaded_file($file['tmp_name'], $destination)) {
-                    WasteReport::addImage($id, 'uploads/' . $newFilename, 'after');
-                }
+        if ($file) {
+            $uploadedPath = Request::validateAndUploadImage($file, 'uploads', 10 * 1024 * 1024);
+            if ($uploadedPath) {
+                WasteReport::addImage($id, $uploadedPath, 'after');
             }
         }
 

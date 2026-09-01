@@ -20,6 +20,12 @@
             <form action="<?= htmlspecialchars($baseUrl ?: '') ?>/report" method="POST" enctype="multipart/form-data" id="wasteReportForm" class="p-5 sm:p-10 space-y-8 sm:space-y-10">
                 <?= \App\Core\CSRF::field() ?>
 
+                <!-- Anti-Bot Honeypot Trap (Hidden from real users) -->
+                <div style="display:none !important; visibility:hidden !important; opacity:0 !important; position:absolute !important; left:-9999px !important;">
+                    <label for="sys_bot_trap_field">Do not fill this field</label>
+                    <input type="text" name="sys_bot_trap_field" id="sys_bot_trap_field" tabindex="-1" autocomplete="off">
+                </div>
+
                 <?php if (!empty($nextSchedule)): ?>
                     <!-- Linked Monthly Collection Round Notice -->
                     <div class="p-4 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-emerald-900">

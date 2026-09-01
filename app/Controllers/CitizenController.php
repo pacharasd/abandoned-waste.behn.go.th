@@ -6,6 +6,7 @@ use App\Core\Response;
 use App\Core\View;
 use App\Core\NotificationService;
 use App\Core\ActivityLogger;
+use App\Core\RateLimiter;
 use App\Models\WasteReport;
 use App\Models\WasteType;
 use App\Models\CollectionSchedule;
@@ -50,6 +51,23 @@ class CitizenController {
     }
 
     public function submitReport(): void {
+        // 1. Anti-Bot Honeypot Trap
+        $honeypot = Request::input('sys_bot_trap_field', '');
+        if (!empty($honeypot)) {
+            ActivityLogger::log('bot_trapped', "ตรวจพบบอทสแปมพยายามส่งข้อมูลจาก IP " . Request::ip(), null);
+            Response::redirect('/success?ref=WB-TRAPPED');
+            return;
+        }
+
+        // 2. IP Rate Limiting (Max 10 submissions per hour per IP)
+        $ip = Request::ip();
+        $rateLimitKey = 'report_submit:' . md5($ip);
+        if (RateLimiter::tooManyAttempts($rateLimitKey, 10, 3600)) {
+            Response::redirect('/report', 'คุณส่งข้อมูลแจ้งขยะถี่เกินกำหนด เพื่อความปลอดภัยของระบบ กรุณารอสักครู่ก่อนส่งใหม่', 'warning');
+            return;
+        }
+        RateLimiter::hit($rateLimitKey, 3600);
+
         $name = trim(Request::input('reporter_name', ''));
         $phone = trim(Request::input('reporter_phone', ''));
         $address = trim(Request::input('address', ''));
@@ -119,25 +137,12 @@ class CitizenController {
         $createdReport = WasteReport::findById($reportId);
         $reportNumber = $createdReport['report_number'];
 
-        // Handle Image Upload
+        // Handle Image Upload with Strict Magic Bytes & Extension Whitelisting
         $file = Request::file('image');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-            $maxSize = 10 * 1024 * 1024; // 10MB
-
-            if (in_array($file['type'], $allowedTypes) && $file['size'] <= $maxSize) {
-                $uploadDir = BASE_PATH . '/public/uploads/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $newFilename = 'report_' . $reportId . '_' . time() . '.' . $ext;
-                $destination = $uploadDir . $newFilename;
-
-                if (move_uploaded_file($file['tmp_name'], $destination)) {
-                    WasteReport::addImage($reportId, 'uploads/' . $newFilename, 'before');
-                }
+        if ($file) {
+            $uploadedPath = Request::validateAndUploadImage($file, 'uploads', 10 * 1024 * 1024);
+            if ($uploadedPath) {
+                WasteReport::addImage($reportId, $uploadedPath, 'before');
             }
         }
 

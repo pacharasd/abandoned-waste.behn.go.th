@@ -39,19 +39,8 @@ class WasteTypeController {
 
         $imagePath = null;
         $file = Request::file('image');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-            if (in_array($file['type'], $allowedTypes)) {
-                $uploadDir = BASE_PATH . '/public/uploads/waste_types/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = 'type_' . time() . '_' . rand(100, 999) . '.' . $ext;
-                if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-                    $imagePath = 'uploads/waste_types/' . $filename;
-                }
-            }
+        if ($file) {
+            $imagePath = Request::validateAndUploadImage($file, 'uploads/waste_types', 5 * 1024 * 1024);
         }
 
         $id = WasteType::create([
@@ -90,18 +79,10 @@ class WasteTypeController {
         ];
 
         $file = Request::file('image');
-        if ($file && $file['error'] === UPLOAD_ERR_OK) {
-            $allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
-            if (in_array($file['type'], $allowedTypes)) {
-                $uploadDir = BASE_PATH . '/public/uploads/waste_types/';
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0777, true);
-                }
-                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $filename = 'type_' . $id . '_' . time() . '.' . $ext;
-                if (move_uploaded_file($file['tmp_name'], $uploadDir . $filename)) {
-                    $data['image'] = 'uploads/waste_types/' . $filename;
-                }
+        if ($file) {
+            $uploadedPath = Request::validateAndUploadImage($file, 'uploads/waste_types', 5 * 1024 * 1024);
+            if ($uploadedPath) {
+                $data['image'] = $uploadedPath;
             }
         }
 

@@ -8,7 +8,26 @@ class Auth {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
-        return isset($_SESSION['user_id']);
+
+        if (!isset($_SESSION['user_id'])) {
+            return false;
+        }
+
+        // Inactivity timeout (2 hours)
+        if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 7200)) {
+            self::logout();
+            return false;
+        }
+        $_SESSION['last_activity'] = time();
+
+        // Anti-Session Hijacking Fingerprint
+        $currentFingerprint = md5(($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . ($_SERVER['REMOTE_ADDR'] ?? ''));
+        if (isset($_SESSION['auth_fingerprint']) && $_SESSION['auth_fingerprint'] !== $currentFingerprint) {
+            self::logout();
+            return false;
+        }
+
+        return true;
     }
 
     public static function user(): ?array {
@@ -19,11 +38,11 @@ class Auth {
     }
 
     public static function id(): ?int {
-        return $_SESSION['user_id'] ?? null;
+        return self::check() ? ($_SESSION['user_id'] ?? null) : null;
     }
 
     public static function role(): ?string {
-        return $_SESSION['user']['role'] ?? null;
+        return self::check() ? ($_SESSION['user']['role'] ?? null) : null;
     }
 
     public static function isAdmin(): bool {
@@ -47,6 +66,8 @@ class Auth {
             'phone' => $user['phone'],
             'role' => $user['role']
         ];
+        $_SESSION['last_activity'] = time();
+        $_SESSION['auth_fingerprint'] = md5(($_SERVER['HTTP_USER_AGENT'] ?? '') . '|' . ($_SERVER['REMOTE_ADDR'] ?? ''));
     }
 
     public static function logout(): void {

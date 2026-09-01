@@ -5,9 +5,25 @@
 
 define('BASE_PATH', dirname(__DIR__));
 
-// Start session
+// Security: Session Hardening (Configured before session_start)
 if (session_status() === PHP_SESSION_NONE) {
+    $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (isset($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == 443);
+    ini_set('session.cookie_httponly', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_samesite', 'Lax');
+    if ($isHttps) {
+        ini_set('session.cookie_secure', '1');
+    }
     session_start();
+}
+
+// Security: Global HTTP Security Headers
+if (!headers_sent()) {
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header('X-XSS-Protection: 1; mode=block');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: geolocation=(self), camera=(), microphone=()');
 }
 
 // 1. PSR-4 Autoloader

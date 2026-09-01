@@ -56,8 +56,87 @@ class Request {
         return null;
     }
 
+    /**
+     * Defense-in-Depth Secure Image Upload Validator & Handler
+     * - Verifies Magic Bytes via finfo MIME sniffing
+     * - Verifies getimagesize()
+     * - Whitelists JPEG, PNG, WEBP
+     * - Generates cryptographically secure random filename
+     * - Returns relative path (e.g. 'uploads/abc123.jpg') or null on failure
+     */
+    public static function validateAndUploadImage(?array $file, string $targetDir = 'uploads', int $maxSizeBytes = 10485760): ?string {
+        if (!$file || !isset($file['tmp_name']) || $file['error'] !== UPLOAD_ERR_OK) {
+            return null;
+        }
+
+        if ($file['size'] > $maxSizeBytes || $file['size'] <= 0) {
+            return null;
+        }
+
+        if (!is_uploaded_file($file['tmp_name'])) {
+            return null;
+        }
+
+        // 1. Verify MIME type using finfo (Magic Bytes)
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        $allowedMimes = [
+            'image/jpeg' => 'jpg',
+            'image/pjpeg' => 'jpg',
+            'image/png' => 'png',
+            'image/x-png' => 'png',
+            'image/webp' => 'webp'
+        ];
+
+        if (!array_key_exists($mime, $allowedMimes)) {
+            return null;
+        }
+
+        // 2. Extra check with getimagesize
+        $imageInfo = @getimagesize($file['tmp_name']);
+        if ($imageInfo === false) {
+            return null;
+        }
+
+        $safeExtension = $allowedMimes[$mime];
+        $randomToken = bin2hex(random_bytes(12));
+        $secureFilename = $randomToken . '_' . time() . '.' . $safeExtension;
+
+        $targetFullPath = rtrim(BASE_PATH . '/public/' . trim($targetDir, '/'), '/') . '/';
+        if (!is_dir($targetFullPath)) {
+            mkdir($targetFullPath, 0755, true);
+        }
+
+        $destination = $targetFullPath . $secureFilename;
+
+        if (move_uploaded_file($file['tmp_name'], $destination)) {
+            return trim($targetDir, '/') . '/' . $secureFilename;
+        }
+
+        return null;
+    }
+
     public static function ip(): string {
-        return $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
+        $headers = [
+            'HTTP_CF_CONNECTING_IP', // Cloudflare
+            'HTTP_X_FORWARDED_FOR',
+            'HTTP_CLIENT_IP',
+            'REMOTE_ADDR'
+        ];
+
+        foreach ($headers as $header) {
+            if (!empty($_SERVER[$header])) {
+                $ips = explode(',', $_SERVER[$header]);
+                $ip = trim($ips[0]);
+                if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                    return $ip;
+                }
+            }
+        }
+
+        return $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1';
     }
 
     public static function isAjax(): bool {

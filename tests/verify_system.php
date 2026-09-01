@@ -186,6 +186,28 @@ try {
     $filteredCount = WasteReport::countFiltered(['status' => 'จัดเก็บเรียบร้อยแล้ว']);
     assertTest($filteredCount >= 4, "WasteReport: countFiltered returns count >= 4 (found {$filteredCount})");
 
+    // 12. Security Suite: RateLimiter & Anti-Brute-Force
+    $testKey = 'test_ip_rate_limit_' . time();
+    \App\Core\RateLimiter::clear($testKey);
+    assertTest(!\App\Core\RateLimiter::tooManyAttempts($testKey, 3, 60), "RateLimiter: Initial attempts under limit");
+    \App\Core\RateLimiter::hit($testKey, 60);
+    \App\Core\RateLimiter::hit($testKey, 60);
+    \App\Core\RateLimiter::hit($testKey, 60);
+    assertTest(\App\Core\RateLimiter::tooManyAttempts($testKey, 3, 60), "RateLimiter: Locked out after 3 attempts");
+    assertTest(\App\Core\RateLimiter::availableIn($testKey) > 0, "RateLimiter: Lockout time remaining calculated correctly");
+    \App\Core\RateLimiter::clear($testKey);
+    assertTest(!\App\Core\RateLimiter::tooManyAttempts($testKey, 3, 60), "RateLimiter: Successfully cleared lockout state");
+
+    // 13. Security Suite: PDPA Sensitive Data Masking
+    $maskedPhone = \App\Core\PDPA::maskPhone('0812345678');
+    assertTest($maskedPhone === '081-***-5678', "PDPA: Phone masked correctly ($maskedPhone)");
+    $maskedName = \App\Core\PDPA::maskName('สมศักดิ์ รักสะอาด');
+    assertTest(strpos($maskedName, 'สมศักดิ์') !== false && strpos($maskedName, 'รักสะอาด') === false, "PDPA: Full name masked with initial ($maskedName)");
+
+    // 14. Security Suite: Session & File Upload Defense
+    assertTest(file_exists(BASE_PATH . '/public/uploads/.htaccess'), "File Defense: public/uploads/.htaccess execution blocker exists");
+    assertTest(file_exists(BASE_PATH . '/public/.htaccess'), "Server Hardening: public/.htaccess security headers configured");
+
     echo "=======================================================\n";
     echo "📊 TEST RESULTS: {$passCount} PASSED, {$failCount} FAILED\n";
     echo "=======================================================\n";

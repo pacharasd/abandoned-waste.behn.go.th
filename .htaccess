@@ -1,3 +1,22 @@
+# ----------------------------------------------------------------------
+# Root Security & Route Forwarding - Waste Management System
+# ----------------------------------------------------------------------
+
+# 1. Disable Directory Listing
+Options -Indexes
+
+# 2. Block direct access to sensitive system directories and files
+<FilesMatch "^\.|\.(env|log|sql|json|lock|yml|yaml|md|ini|sh|bat)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# 3. Forward all traffic to public directory
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteRule ^$ public/ [L]
