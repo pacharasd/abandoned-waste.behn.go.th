@@ -51,39 +51,39 @@
                     </a>
                 </div>
 
-                <!-- Quick Live Metrics (Glass Pill Cards) -->
+                <!-- Quick Live Metrics (Glass Pill Cards with Solid White Text) -->
                 <div class="grid grid-cols-3 gap-2.5 sm:gap-3 pt-6 border-t border-white/10">
-                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                        <div class="flex items-center gap-1.5 text-emerald-300 text-xs mb-1">
-                            <i data-lucide="inbox" class="w-3.5 h-3.5"></i>
-                            <span class="text-[11px] sm:text-xs font-medium text-emerald-200/80">ได้รับแจ้ง</span>
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
+                        <div class="flex items-center gap-1.5 text-white text-xs mb-1">
+                            <i data-lucide="inbox" class="w-3.5 h-3.5 text-white"></i>
+                            <span class="text-[11px] sm:text-xs font-semibold text-white">ได้รับแจ้ง</span>
                         </div>
                         <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
                             <?= number_format($metrics['total'] ?? 0) ?>
                         </div>
-                        <div class="text-[10px] sm:text-[11px] text-emerald-200/60 mt-0.5">รายการทั้งหมด</div>
+                        <div class="text-[10px] sm:text-[11px] text-white/90 mt-0.5">รายการทั้งหมด</div>
                     </div>
 
-                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                        <div class="flex items-center gap-1.5 text-teal-300 text-xs mb-1">
-                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
-                            <span class="text-[11px] sm:text-xs font-medium text-teal-200/80">จัดเก็บสำเร็จ</span>
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
+                        <div class="flex items-center gap-1.5 text-white text-xs mb-1">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-white"></i>
+                            <span class="text-[11px] sm:text-xs font-semibold text-white">จัดเก็บสำเร็จ</span>
                         </div>
                         <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
                             <?= number_format($metrics['completed'] ?? 0) ?>
                         </div>
-                        <div class="text-[10px] sm:text-[11px] text-teal-200/60 mt-0.5">จุดเสร็จสิ้น</div>
+                        <div class="text-[10px] sm:text-[11px] text-white/90 mt-0.5">จุดเสร็จสิ้น</div>
                     </div>
 
-                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
-                        <div class="flex items-center gap-1.5 text-amber-300 text-xs mb-1">
-                            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
-                            <span class="text-[11px] sm:text-xs font-medium text-amber-200/80">น้ำหนักรวม</span>
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/10 border border-white/15 backdrop-blur-sm">
+                        <div class="flex items-center gap-1.5 text-white text-xs mb-1">
+                            <i data-lucide="scale" class="w-3.5 h-3.5 text-white"></i>
+                            <span class="text-[11px] sm:text-xs font-semibold text-white">น้ำหนักรวม</span>
                         </div>
                         <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
                             <?= number_format($metrics['actual_weight_total'] ?? 0, 1) ?>
                         </div>
-                        <div class="text-[10px] sm:text-[11px] text-amber-200/60 mt-0.5">กิโลกรัม (กก.)</div>
+                        <div class="text-[10px] sm:text-[11px] text-white/90 mt-0.5">กิโลกรัม (กก.)</div>
                     </div>
                 </div>
 
