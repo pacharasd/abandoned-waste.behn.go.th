@@ -1,104 +1,134 @@
 <?php ob_start(); ?>
 
-<!-- Hero Section -->
-<section class="relative bg-gradient-to-b from-emerald-900 via-emerald-800 to-teal-900 text-white overflow-hidden py-16 lg:py-24">
-    <!-- Background subtle shapes -->
-    <div class="absolute inset-0 opacity-10 pointer-events-none">
-        <div class="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-emerald-400 blur-3xl"></div>
-        <div class="absolute top-1/2 -right-24 w-96 h-96 rounded-full bg-teal-300 blur-3xl"></div>
+<!-- Hero Section (Premium Modern Thai Eco-Government) -->
+<section class="relative bg-gradient-to-br from-emerald-950 via-emerald-900 to-teal-950 text-white overflow-hidden py-14 sm:py-20 lg:py-24">
+    <!-- Atmospheric Ambient Glows & Mesh Pattern -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute -top-32 -left-32 w-[500px] h-[500px] rounded-full bg-emerald-500/20 blur-[120px]"></div>
+        <div class="absolute top-1/3 -right-32 w-[550px] h-[550px] rounded-full bg-teal-400/15 blur-[140px]"></div>
+        <div class="absolute -bottom-20 left-1/3 w-[400px] h-[400px] rounded-full bg-emerald-600/10 blur-[100px]"></div>
+        <!-- Subtle dot grid pattern overlay -->
+        <div class="absolute inset-0 bg-[radial-gradient(rgba(255,255,255,0.07)_1px,transparent_1px)] [background-size:24px_24px] opacity-40"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+            
             <!-- Left Hero Content -->
             <div class="lg:col-span-7 space-y-6">
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-200 text-xs sm:text-sm font-medium backdrop-blur-md">
-                    <img src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/images/nonthaburi-logo.png" alt="เทศบาลนครนนทบุรี" class="w-5 h-5 object-contain bg-white rounded-full p-0.5">
-                    <span>เทศบาลนครนนทบุรี</span>
+                <!-- Top Municipal Pill Tag -->
+                <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 text-emerald-200 text-xs sm:text-sm font-medium backdrop-blur-md shadow-sm">
+                    <img src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/images/nonthaburi-logo.png" alt="เทศบาลนครนนทบุรี" class="w-5 h-5 object-contain bg-white rounded-full p-0.5 shadow-2xs">
+                    <span class="font-prompt">เทศบาลนครนนทบุรี</span>
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    <span class="text-emerald-300/90 text-xs">โครงการจัดการขยะชุมชน</span>
                 </div>
 
-
-                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-                    ขยะไร้บ้าน <br>
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-white">
-                        เทศบาลนครนนทบุรี
+                <!-- Main Impact Heading -->
+                <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.18] text-white">
+                    ระบบแจ้งจัดเก็บ <br class="hidden sm:inline">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-300 via-teal-200 to-white drop-shadow-sm">
+                        ขยะไร้บ้าน
+                    </span>
+                    <span class="block text-xl sm:text-2xl lg:text-3xl font-bold text-emerald-100/90 mt-2 font-prompt">
+                        ร่วมสร้างเมืองนนท์สะอาด น่าอยู่ ไร้ขยะตกค้าง
                     </span>
                 </h1>
 
-                <p class="text-lg text-emerald-100/90 max-w-xl font-light leading-relaxed">
-                    ช่วยกันดูแลความสะอาดในเมือง ปักหมุดจุดที่มีขยะตกค้าง ขยะชิ้นใหญ่ หรือขยะเน่าเสีย เจ้าหน้าที่จะได้รับมอบหมายงานและเข้าจัดเก็บอย่างเป็นระบบ พร้อมติดตามสถานะได้แบบเรียลไทม์
+                <!-- Subtitle Description -->
+                <p class="text-sm sm:text-base text-emerald-100/80 max-w-xl font-light leading-relaxed">
+                    พบเห็นจุดทิ้งขยะตกค้าง ขยะชิ้นใหญ่ หรือขยะเน่าเสียในชุมชน สามารถปักหมุดแจ้งเจ้าหน้าที่ได้ทันที พร้อมติดตามผลการเข้าจัดเก็บแบบเรียลไทม์
                 </p>
 
-                <!-- Action CTA Group -->
-                <div class="flex flex-col sm:flex-row gap-4 pt-2">
-                    <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/report" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl transition duration-200 shadow-xl shadow-emerald-950/30 hover:scale-[1.02] border border-emerald-300/30">
-                        <i data-lucide="plus-circle" class="w-6 h-6 text-white"></i>
-                        <span>แจ้งจุดจัดเก็บขยะ</span>
+                <!-- Action CTA Button Group -->
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
+                    <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/report" class="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold rounded-2xl transition-all duration-200 shadow-lg shadow-emerald-500/25 hover:shadow-emerald-400/35 hover:-translate-y-0.5 active:translate-y-0 text-sm sm:text-base">
+                        <i data-lucide="plus-circle" class="w-5 h-5"></i>
+                        <span>แจ้งจุดทิ้งขยะทันที</span>
                     </a>
-                    <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/track" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium rounded-2xl transition duration-200 backdrop-blur-md">
-                        <i data-lucide="search" class="w-5 h-5 text-white"></i>
-                        <span>ติดตามสถานะงาน</span>
+                    <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/schedule" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white/10 hover:bg-white/15 border border-white/15 text-white font-medium rounded-2xl transition-all duration-200 backdrop-blur-md hover:-translate-y-0.5 text-sm sm:text-base">
+                        <i data-lucide="calendar-days" class="w-4 h-4 text-emerald-300"></i>
+                        <span>ดูรอบวันจัดเก็บ</span>
                     </a>
                 </div>
 
+                <!-- Quick Live Metrics (Glass Pill Cards) -->
+                <div class="grid grid-cols-3 gap-2.5 sm:gap-3 pt-6 border-t border-white/10">
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+                        <div class="flex items-center gap-1.5 text-emerald-300 text-xs mb-1">
+                            <i data-lucide="inbox" class="w-3.5 h-3.5"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-emerald-200/80">ได้รับแจ้ง</span>
+                        </div>
+                        <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
+                            <?= number_format($metrics['total'] ?? 0) ?>
+                        </div>
+                        <div class="text-[10px] sm:text-[11px] text-emerald-200/60 mt-0.5">รายการทั้งหมด</div>
+                    </div>
 
-                <!-- Quick highlights -->
-                <div class="grid grid-cols-3 gap-4 pt-6 border-t border-emerald-700/50">
-                    <div>
-                        <div class="text-2xl lg:text-3xl font-bold text-white"><?= number_format($metrics['total'] ?? 0) ?></div>
-                        <div class="text-xs text-white">รายการแจ้งทั้งหมด</div>
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+                        <div class="flex items-center gap-1.5 text-teal-300 text-xs mb-1">
+                            <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-teal-200/80">จัดเก็บสำเร็จ</span>
+                        </div>
+                        <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
+                            <?= number_format($metrics['completed'] ?? 0) ?>
+                        </div>
+                        <div class="text-[10px] sm:text-[11px] text-teal-200/60 mt-0.5">จุดเสร็จสิ้น</div>
                     </div>
-                    <div>
-                        <div class="text-2xl lg:text-3xl font-bold text-white"><?= number_format($metrics['completed'] ?? 0) ?></div>
-                        <div class="text-xs text-white">จัดเก็บสำเร็จแล้ว</div>
-                    </div>
-                    <div>
-                        <div class="text-2xl lg:text-3xl font-bold text-white"><?= number_format($metrics['actual_weight_total'] ?? 0, 1) ?> <span class="text-sm font-normal text-white">กก.</span></div>
-                        <div class="text-xs text-white">น้ำหนักจัดเก็บจริง</div>
+
+                    <div class="p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-xs">
+                        <div class="flex items-center gap-1.5 text-amber-300 text-xs mb-1">
+                            <i data-lucide="scale" class="w-3.5 h-3.5"></i>
+                            <span class="text-[11px] sm:text-xs font-medium text-amber-200/80">น้ำหนักรวม</span>
+                        </div>
+                        <div class="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white font-mono leading-tight">
+                            <?= number_format($metrics['actual_weight_total'] ?? 0, 1) ?>
+                        </div>
+                        <div class="text-[10px] sm:text-[11px] text-amber-200/60 mt-0.5">กิโลกรัม (กก.)</div>
                     </div>
                 </div>
+
             </div>
 
             <!-- Right Hero Card: Quick Search & Tracking -->
             <div class="lg:col-span-5">
-                <div class="bg-white/95 backdrop-blur-md p-6 sm:p-8 rounded-3xl shadow-2xl border border-white/20 text-slate-800">
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
-                            <i data-lucide="map-pin" class="w-5 h-5"></i>
-                        </div>
-                        <div>
-                            <h3 class="font-bold text-lg text-slate-900">ตรวจสอบสถานะรายการแจ้ง</h3>
-                            <p class="text-xs text-slate-500">กรอกเลขที่รายการ เช่น WB-2026-000001 หรือเบอร์โทร</p>
-                        </div>
+                <div class="bg-white/95 backdrop-blur-xl p-6 sm:p-8 rounded-3xl shadow-2xl shadow-black/30 border border-white/40 text-slate-800 relative">
+                    <!-- Accent Pill -->
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold mb-4 border border-emerald-200/60">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                        <span>ติดตามสถานะเรียลไทม์</span>
                     </div>
+
+                    <h3 class="font-bold text-lg sm:text-xl text-slate-900 leading-tight">ตรวจสอบความคืบหน้า</h3>
+                    <p class="text-xs text-slate-500 mt-1 mb-5">กรอกรหัสแจ้งเรื่อง (เช่น WB-2026-000001) หรือเบอร์โทรศัพท์</p>
 
                     <form action="<?= htmlspecialchars($baseUrl ?: '') ?>/track" method="GET" class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-700 mb-1.5">ค้นหาด้วยเลขที่รายการ หรือ เบอร์โทรศัพท์</label>
                             <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                                    <i data-lucide="search" class="w-5 h-5"></i>
+                                    <i data-lucide="search" class="w-5 h-5 text-emerald-600"></i>
                                 </div>
                                 <input type="text" name="search" required placeholder="เช่น WB-2026-000001 หรือ 0812345678" 
-                                       class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition text-sm">
+                                       class="w-full pl-11 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition text-xs sm:text-sm font-medium shadow-2xs">
                             </div>
                         </div>
 
-                        <button type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded-xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-slate-900/10">
+                        <button type="submit" class="w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-2xl transition duration-200 flex items-center justify-center gap-2 shadow-lg shadow-slate-900/20 hover:scale-[1.01] active:scale-[0.99] text-sm">
+                            <span>ค้นหาและติดตามสถานะ</span>
                             <i data-lucide="arrow-right" class="w-4 h-4 text-emerald-400"></i>
-                            <span>ตรวจสอบสถานะ</span>
                         </button>
                     </form>
 
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                        <span>ยังไม่ได้แจ้งขยะ?</span>
-                        <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/report" class="text-emerald-700 font-semibold hover:underline flex items-center gap-1">
-                            <span>กรอกแบบฟอร์มแจ้งเรื่อง</span>
+                        <span>ต้องการแจ้งจุดทิ้งขยะใหม่?</span>
+                        <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/report" class="text-emerald-700 font-bold hover:underline flex items-center gap-0.5">
+                            <span>แจ้งเรื่องที่นี่</span>
                             <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
                         </a>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
