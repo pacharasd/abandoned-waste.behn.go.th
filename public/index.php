@@ -37,6 +37,8 @@ spl_autoload_register(function ($class) {
 
 // Security: Global HTTP Security Headers
 if (!headers_sent()) {
+    // HTTP Strict Transport Security (HSTS) - 1 Year with SubDomains and Preload
+    header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
     header('X-Frame-Options: SAMEORIGIN');
     header('X-Content-Type-Options: nosniff');
     header('X-XSS-Protection: 1; mode=block');

@@ -56,3 +56,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Eliminated `'unsafe-inline'` and `data:` from `script-src`, instituted per-request cryptographic nonces (`App\Core\CSP`), restricted `object-src 'none'`, and refactored all inline `onclick` attributes into declarative data-attributes in `app-security.js`.
+
+---
+
+## [2026-09-02] refactor | HTTP Strict Transport Security (HSTS) Hardening
+- **Operation:** Mozilla Observatory TLS/HSTS audit compliance hardening.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Implemented `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` across Apache (`public/.htaccess`) and PHP (`public/index.php`) satisfying hstspreload.org requirements.

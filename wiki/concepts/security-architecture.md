@@ -54,9 +54,10 @@ tags:
   - **จำกัด `object-src 'none'`:** ปิดกั้นการแทรก Flash, Java Applets หรือ Object ภายนอกทั้งหมด
   - **จำกัด `base-uri 'self'`:** ป้องกันการโจมตี Base Tag Hijacking
   - **จำกัด `frame-ancestors 'self'`:** ป้องกัน Clickjacking
-- **HTTP Security Headers:**
-  - `X-Frame-Options: SAMEORIGIN`
-  - `X-Content-Type-Options: nosniff`
+- **HTTP Security Headers & Transport Security:**
+  - `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` (บังคับเชื่อมต่อผ่าน HTTPS 100% เป็นเวลาอย่างน้อย 1 ปี พร้อมรองรับ Subdomains และ HSTS Preload List ตามเกณฑ์ Mozilla Observatory / Chrome HSTS Preload)
+  - `X-Frame-Options: SAMEORIGIN` (ป้องกัน Clickjacking)
+  - `X-Content-Type-Options: nosniff` (ป้องกัน MIME Sniffing)
   - `Referrer-Policy: strict-origin-when-cross-origin`
   - `Permissions-Policy: geolocation=(self), camera=(), microphone=()`
 - **Upload Directory Hardening:** บล็อกการสั่ง Execute ไฟล์ Script (`.php`, `.phtml`, `.sh`, `.exe`, ฯลฯ) ใน `public/uploads/.htaccess`

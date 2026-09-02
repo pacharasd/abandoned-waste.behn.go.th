@@ -283,6 +283,15 @@ try {
     assertTest(strpos($cspHeader, "object-src 'none'") !== false, "CSP: object-src explicitly restricted to 'none'");
     assertTest(strpos($cspHeader, "base-uri 'self'") !== false, "CSP: base-uri explicitly restricted to 'self'");
 
+    // 20. Security Suite: Strict Transport Security (HSTS) Compliance
+    $htaccessContent = file_get_contents(BASE_PATH . '/public/.htaccess');
+    assertTest(strpos($htaccessContent, 'Strict-Transport-Security') !== false, "HSTS: Strict-Transport-Security directive configured in public/.htaccess");
+    assertTest(strpos($htaccessContent, 'max-age=31536000') !== false, "HSTS: max-age set to 1 year (31536000 seconds) for Mozilla/hstspreload qualification");
+    assertTest(strpos($htaccessContent, 'includeSubDomains') !== false && strpos($htaccessContent, 'preload') !== false, "HSTS: includeSubDomains and preload flags active in .htaccess");
+
+    $indexContent = file_get_contents(BASE_PATH . '/public/index.php');
+    assertTest(strpos($indexContent, 'Strict-Transport-Security') !== false, "HSTS: Strict-Transport-Security header sent by PHP application in index.php");
+
     echo "=======================================================\n";
     echo "📊 TEST RESULTS: {$passCount} PASSED, {$failCount} FAILED\n";
     echo "=======================================================\n";
