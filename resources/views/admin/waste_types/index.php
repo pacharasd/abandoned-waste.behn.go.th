@@ -10,11 +10,11 @@
         </div>
 
         <div class="flex items-center gap-2.5 flex-wrap">
-            <button type="button" onclick="document.getElementById('adminOrphanPosterModal').classList.remove('hidden')" class="px-4 py-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-bold rounded-xl border border-teal-200 transition flex items-center gap-2 w-fit">
+            <button type="button" data-modal-open="adminOrphanPosterModal" class="px-4 py-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 text-xs font-bold rounded-xl border border-teal-200 transition flex items-center gap-2 w-fit">
                 <i data-lucide="image" class="w-4 h-4 text-teal-600"></i>
                 <span>ดูประกาศขยะกำพร้า</span>
             </button>
-            <button type="button" onclick="document.getElementById('addTypeModal').classList.remove('hidden')" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm shadow-emerald-600/20 w-fit">
+            <button type="button" data-modal-open="addTypeModal" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm shadow-emerald-600/20 w-fit">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>เพิ่มประเภทขยะใหม่</span>
             </button>
@@ -121,7 +121,7 @@
                                 <!-- Action Buttons -->
                                 <td class="px-6 py-4 text-right whitespace-nowrap">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button type="button" onclick='openEditTypeModal(<?= json_encode($wt, JSON_HEX_APOS | JSON_HEX_QUOT) ?>)' class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition flex items-center gap-1.5">
+                                        <button type="button" class="btn-edit-type px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-xl transition flex items-center gap-1.5" data-type='<?= htmlspecialchars(json_encode($wt), ENT_QUOTES, 'UTF-8') ?>'>
                                             <i data-lucide="edit-2" class="w-3.5 h-3.5"></i>
                                             <span>แก้ไข</span>
                                         </button>
@@ -152,7 +152,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="font-bold text-slate-900 text-base">เพิ่มประเภทขยะใหม่</h3>
-            <button type="button" onclick="document.getElementById('addTypeModal').classList.add('hidden')" class="p-1 text-slate-400 hover:text-slate-600">
+            <button type="button" data-modal-close="addTypeModal" class="p-1 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -187,7 +187,7 @@
             </div>
 
             <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('addTypeModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
+                <button type="button" data-modal-close="addTypeModal" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">
@@ -203,7 +203,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="font-bold text-slate-900 text-base">แก้ไขประเภทขยะ</h3>
-            <button type="button" onclick="document.getElementById('editTypeModal').classList.add('hidden')" class="p-1 text-slate-400 hover:text-slate-600">
+            <button type="button" data-modal-close="editTypeModal" class="p-1 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -238,7 +238,7 @@
             </div>
 
             <div class="pt-3 flex items-center justify-end gap-2 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('editTypeModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
+                <button type="button" data-modal-close="editTypeModal" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">
@@ -250,7 +250,7 @@
 </div>
 
 <!-- Modal: Official Poster View for Admin -->
-<div id="adminOrphanPosterModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+<div id="adminOrphanPosterModal" class="modal-backdrop-auto fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div class="flex items-center gap-2">
@@ -262,7 +262,7 @@
                     <span class="text-[10px] text-slate-500">ขยะที่รีไซเคิลไม่ได้ ซาเล้งไม่รับ</span>
                 </div>
             </div>
-            <button type="button" onclick="document.getElementById('adminOrphanPosterModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
+            <button type="button" data-modal-close="adminOrphanPosterModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -271,14 +271,14 @@
         </div>
         <div class="p-3 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="text-slate-500">สำนักการสาธารณสุขและสิ่งแวดล้อม</span>
-            <button type="button" onclick="document.getElementById('adminOrphanPosterModal').classList.add('hidden')" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
+            <button type="button" data-modal-close="adminOrphanPosterModal" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
                 ปิดหน้าต่าง
             </button>
         </div>
     </div>
 </div>
 
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 function openEditTypeModal(wt) {
     document.getElementById('editTypeName').value = wt.name;
     document.getElementById('editTypeDescription').value = wt.description || '';
@@ -286,6 +286,13 @@ function openEditTypeModal(wt) {
     document.getElementById('editTypeForm').action = '<?= htmlspecialchars($baseUrl ?: '') ?>/admin/waste-types/' + wt.id + '/update';
     document.getElementById('editTypeModal').classList.remove('hidden');
 }
+
+document.querySelectorAll('.btn-edit-type').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const wt = JSON.parse(this.getAttribute('data-type'));
+        openEditTypeModal(wt);
+    });
+});
 </script>
 
 <?php

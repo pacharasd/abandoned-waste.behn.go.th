@@ -44,12 +44,19 @@ tags:
 ### 4. การรักษาความปลอดภัยฝั่ง Front-End & DOM XSS Defense
 - **Universal CSRF Protection:** ติดตั้ง `<meta name="csrf-token">` ใน Layout หลัก และโหลด `app-security.js` เพื่อแทรก Header `X-CSRF-TOKEN` ในทุกคำขอ `fetch()` หรือ AJAX โดยอัตโนมัติ
 - **Safe DOM / Leaflet Map Rendering:** หลีกเลี่ยงการต่อสตริง HTML สุ่มเสี่ยงใน Popups ของแผนที่ Leaflet โดยใช้ `AppSecurity.createSafePopup()` สร้าง DOM Element ผ่าน `textContent` ที่ปลอดภัยจาก XSS 100%
+- **Declarative Event Delegation (No Inline `onclick`):** ยกเลิกการใช้ Inline Event Handler ทุกจุดในโปรเจกต์ (`onclick="..."`) แล้วเปลี่ยนมาใช้ Event Delegation ใน `app-security.js` ผ่าน Data Attributes เช่น `data-modal-open`, `data-modal-close`, `data-dismiss="alert"`, และ `data-sidebar-open/close` เพื่อสอดรับกับนโยบาย CSP ที่เข้มงวด
 
-### 5. มาตรการระดับโครงสร้างพื้นฐาน (Server Hardening & HTTP Headers)
-- **Content-Security-Policy (CSP):** กำหนด White-list สำหรับ Scripts, Styles, และ Fonts เฉพาะ CDN ที่ได้รับอนุญาต (Tailwind, Google Fonts, Leaflet, Chart.js, Lucide, OpenStreetMap)
+### 5. มาตรการระดับโครงสร้างพื้นฐาน (Server Hardening & Strict CSP)
+- **Strict Nonce-based Content-Security-Policy (`App\Core\CSP`):**
+  - กำหนดค่า CSP ตามมาตรฐานความปลอดภัยสูงสุดของ Mozilla Observatory / OWASP
+  - **ลบ `'unsafe-inline'` และ `data:` ออกจาก `script-src` 100%**: ป้องกันการฉีดสคริปต์ (XSS) ทุกรูปแบบ
+  - **Cryptographic Nonce Per-Request:** ใช้ `App\Core\CSP::nonce()` สุ่มรหัส 128-bit random base64 ผูกกับแท็ก `<script nonce="...">` ทุกแท็ก
+  - **จำกัด `object-src 'none'`:** ปิดกั้นการแทรก Flash, Java Applets หรือ Object ภายนอกทั้งหมด
+  - **จำกัด `base-uri 'self'`:** ป้องกันการโจมตี Base Tag Hijacking
+  - **จำกัด `frame-ancestors 'self'`:** ป้องกัน Clickjacking
 - **HTTP Security Headers:**
-  - `X-Frame-Options: SAMEORIGIN` (ป้องกัน Clickjacking)
-  - `X-Content-Type-Options: nosniff` (ป้องกัน MIME Confusion)
+  - `X-Frame-Options: SAMEORIGIN`
+  - `X-Content-Type-Options: nosniff`
   - `Referrer-Policy: strict-origin-when-cross-origin`
   - `Permissions-Policy: geolocation=(self), camera=(), microphone=()`
 - **Upload Directory Hardening:** บล็อกการสั่ง Execute ไฟล์ Script (`.php`, `.phtml`, `.sh`, `.exe`, ฯลฯ) ใน `public/uploads/.htaccess`

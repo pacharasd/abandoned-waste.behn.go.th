@@ -33,7 +33,7 @@
                             <?= htmlspecialchars($report['report_number']) ?>
                         </div>
                     </div>
-                    <button type="button" onclick="copyReportNumber()" class="px-3 py-2 bg-white hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-800 transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                    <button type="button" id="copyReportBtn" class="px-3 py-2 bg-white hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-800 transition flex items-center gap-1.5 shadow-sm active:scale-95">
                         <i data-lucide="copy" class="w-3.5 h-3.5 text-emerald-600"></i>
                         <span id="copyBtnText">คัดลอก</span>
                     </button>
@@ -134,7 +134,7 @@
                     <span>ตรวจสอบสถานะตอนนี้</span>
                 </a>
 
-                <button type="button" onclick="downloadSlipImage()" id="downloadSlipBtn" 
+                <button type="button" id="downloadSlipBtn" 
                         class="py-3.5 px-4 bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-200 hover:border-emerald-300 font-semibold rounded-2xl transition flex items-center justify-center gap-2 shadow-sm active:scale-95 text-sm">
                     <i data-lucide="download" class="w-4 h-4 text-emerald-600" id="downloadSlipIcon"></i>
                     <span id="downloadSlipBtnText">บันทึกรูปภาพบัตรแจ้ง</span>
@@ -154,7 +154,7 @@
     </div>
 </div>
 
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 function copyReportNumber() {
     const text = document.getElementById('reportNumberText').innerText.trim();
     navigator.clipboard.writeText(text).then(() => {
@@ -164,6 +164,7 @@ function copyReportNumber() {
         }, 2500);
     });
 }
+document.getElementById('copyReportBtn')?.addEventListener('click', copyReportNumber);
 
 function downloadSlipImage() {
     const slipElement = document.getElementById('ticketSlipCard');

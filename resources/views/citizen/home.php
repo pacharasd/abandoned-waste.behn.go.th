@@ -297,7 +297,7 @@
             </div>
 
             <div class="flex items-center gap-2.5">
-                <button type="button" onclick="document.getElementById('homeOrphanPosterModal').classList.remove('hidden')" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-2 border border-slate-200">
+                <button type="button" data-modal-open="homeOrphanPosterModal" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-2 border border-slate-200">
                     <i data-lucide="image" class="w-4 h-4 text-teal-600"></i>
                     <span>ดูโปสเตอร์ฉบับเต็ม</span>
                 </button>
@@ -447,7 +447,7 @@
 </section>
 
 <!-- Modal: Poster Infographic for Home -->
-<div id="homeOrphanPosterModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+<div id="homeOrphanPosterModal" class="modal-backdrop-auto fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div class="flex items-center gap-2">
@@ -459,7 +459,7 @@
                     <span class="text-[10px] text-slate-500">ขยะที่รีไซเคิลไม่ได้ ซาเล้งไม่รับ</span>
                 </div>
             </div>
-            <button type="button" onclick="document.getElementById('homeOrphanPosterModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
+            <button type="button" data-modal-close="homeOrphanPosterModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -468,7 +468,7 @@
         </div>
         <div class="p-3 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="text-slate-500">สำนักการสาธารณสุขและสิ่งแวดล้อม</span>
-            <button type="button" onclick="document.getElementById('homeOrphanPosterModal').classList.add('hidden')" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
+            <button type="button" data-modal-close="homeOrphanPosterModal" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
                 ปิดหน้าต่าง
             </button>
         </div>
@@ -476,7 +476,7 @@
 </div>
 
 <!-- Leaflet Map Script for Public Homepage -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
     const map = L.map('publicOverviewMap', {
         preferCanvas: true,

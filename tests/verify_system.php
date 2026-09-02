@@ -269,6 +269,20 @@ try {
     assertTest(file_exists(BASE_PATH . '/resources/views/errors/429.php'), "Error Views: 429 Too Many Requests page exists");
     assertTest(file_exists(BASE_PATH . '/resources/views/errors/500.php'), "Error Views: 500 Internal Server Error page exists");
 
+    // 19. Security Suite: Content Security Policy (CSP) Strict Compliance
+    $nonce = \App\Core\CSP::nonce();
+    assertTest(!empty($nonce) && strlen($nonce) >= 20, "CSP: Generated cryptographic nonce of sufficient entropy ({$nonce})");
+    $cspHeader = \App\Core\CSP::getHeader();
+    assertTest(strpos($cspHeader, "script-src 'self' 'nonce-") !== false, "CSP: script-src enforced with per-request cryptographic nonce");
+    assertTest(strpos($cspHeader, "'unsafe-inline'") === false || strpos($cspHeader, "script-src 'self' 'unsafe-inline'") === false, "CSP: Removed 'unsafe-inline' from script-src");
+    // Verify script-src specifically does not contain unsafe-inline or data:
+    preg_match('/script-src([^;]+);/', $cspHeader, $scriptSrcMatches);
+    $scriptSrcContent = $scriptSrcMatches[1] ?? '';
+    assertTest(strpos($scriptSrcContent, "'unsafe-inline'") === false, "CSP: script-src directive strictly excludes 'unsafe-inline'");
+    assertTest(strpos($scriptSrcContent, 'data:') === false, "CSP: script-src directive strictly excludes 'data:'");
+    assertTest(strpos($cspHeader, "object-src 'none'") !== false, "CSP: object-src explicitly restricted to 'none'");
+    assertTest(strpos($cspHeader, "base-uri 'self'") !== false, "CSP: base-uri explicitly restricted to 'self'");
+
     echo "=======================================================\n";
     echo "📊 TEST RESULTS: {$passCount} PASSED, {$failCount} FAILED\n";
     echo "=======================================================\n";

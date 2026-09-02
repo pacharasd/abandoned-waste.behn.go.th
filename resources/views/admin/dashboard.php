@@ -238,7 +238,7 @@
 </div>
 
 <!-- Admin Map & Chart JS Scripts -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
 
     // 1. Chart: Monthly Trend (Line Chart)

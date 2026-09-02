@@ -17,25 +17,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Security: Global HTTP Security Headers
-if (!headers_sent()) {
-    header('X-Frame-Options: SAMEORIGIN');
-    header('X-Content-Type-Options: nosniff');
-    header('X-XSS-Protection: 1; mode=block');
-    header('Referrer-Policy: strict-origin-when-cross-origin');
-    header('Permissions-Policy: geolocation=(self), camera=(), microphone=()');
-
-    // Content Security Policy (allows required CDNs without breaking dynamic scripts)
-    $csp = "default-src 'self'; "
-        . "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
-        . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; "
-        . "font-src 'self' https://fonts.gstatic.com data:; "
-        . "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; "
-        . "connect-src 'self'; "
-        . "frame-ancestors 'self';";
-    header("Content-Security-Policy: {$csp}");
-}
-
 // 1. PSR-4 Autoloader
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
@@ -53,6 +34,18 @@ spl_autoload_register(function ($class) {
         require_once $file;
     }
 });
+
+// Security: Global HTTP Security Headers
+if (!headers_sent()) {
+    header('X-Frame-Options: SAMEORIGIN');
+    header('X-Content-Type-Options: nosniff');
+    header('X-XSS-Protection: 1; mode=block');
+    header('Referrer-Policy: strict-origin-when-cross-origin');
+    header('Permissions-Policy: geolocation=(self), camera=(), microphone=()');
+
+    // Strict, Nonce-based Content Security Policy (No 'unsafe-inline' in script-src, object-src 'none')
+    \App\Core\CSP::sendHeader();
+}
 
 // Global Exception & Error Handler (Zero Information Leakage in Production)
 set_exception_handler(function (\Throwable $e) {

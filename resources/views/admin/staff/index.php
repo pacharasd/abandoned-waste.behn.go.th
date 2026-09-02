@@ -9,7 +9,7 @@
             <p class="text-xs text-slate-400 mt-0.5">รายชื่อเจ้าหน้าที่ภาคสนาม และภาระงานที่รับผิดชอบ</p>
         </div>
 
-        <button type="button" onclick="document.getElementById('addStaffModal').classList.remove('hidden')" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm">
+        <button type="button" data-modal-open="addStaffModal" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm">
             <i data-lucide="user-plus" class="w-4 h-4"></i>
             <span>เพิ่มเจ้าหน้าที่ใหม่</span>
         </button>
@@ -64,7 +64,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <button type="button" onclick="openEditModal(<?= htmlspecialchars(json_encode($stf)) ?>)" class="p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs transition">
+                                        <button type="button" class="btn-edit-staff p-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs transition" data-staff='<?= htmlspecialchars(json_encode($stf), ENT_QUOTES, 'UTF-8') ?>'>
                                             <i data-lucide="edit-3" class="w-4 h-4"></i>
                                         </button>
                                         <form action="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/staff/<?= $stf['id'] ?>/delete" method="POST" onsubmit="return confirm('ยืนยันการลบบัญชีเจ้าหน้าที่นี้หรือไม่?')" class="inline">
@@ -90,7 +90,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="font-bold text-slate-900 text-base">เพิ่มเจ้าหน้าที่ใหม่</h3>
-            <button type="button" onclick="document.getElementById('addStaffModal').classList.add('hidden')" class="p-1 text-slate-400 hover:text-slate-600">
+            <button type="button" data-modal-close="addStaffModal" class="p-1 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -123,7 +123,7 @@
             </div>
 
             <div class="pt-3 flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('addStaffModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
+                <button type="button" data-modal-close="addStaffModal" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">
@@ -139,7 +139,7 @@
     <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 class="font-bold text-slate-900 text-base">แก้ไขข้อมูลเจ้าหน้าที่</h3>
-            <button type="button" onclick="document.getElementById('editStaffModal').classList.add('hidden')" class="p-1 text-slate-400 hover:text-slate-600">
+            <button type="button" data-modal-close="editStaffModal" class="p-1 text-slate-400 hover:text-slate-600">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -172,7 +172,7 @@
             </div>
 
             <div class="pt-3 flex items-center justify-end gap-2">
-                <button type="button" onclick="document.getElementById('editStaffModal').classList.add('hidden')" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
+                <button type="button" data-modal-close="editStaffModal" class="px-4 py-2 bg-slate-100 text-slate-700 rounded-xl text-xs font-semibold">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold">
@@ -183,7 +183,7 @@
     </div>
 </div>
 
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 function openEditModal(staff) {
     document.getElementById('editName').value = staff.name;
     document.getElementById('editEmail').value = staff.email;
@@ -191,6 +191,13 @@ function openEditModal(staff) {
     document.getElementById('editStaffForm').action = '<?= htmlspecialchars($baseUrl ?: '') ?>/admin/staff/' + staff.id + '/update';
     document.getElementById('editStaffModal').classList.remove('hidden');
 }
+
+document.querySelectorAll('.btn-edit-staff').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const staff = JSON.parse(this.getAttribute('data-staff'));
+        openEditModal(staff);
+    });
+});
 </script>
 
 <?php

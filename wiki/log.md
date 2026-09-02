@@ -48,3 +48,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
   - `[[wiki/concepts/security-architecture]]`
 - **Catalog Update:** Registered concept node into `[[wiki/index]]`.
 - **Key Synthesis:** Codified the Defense-in-Depth security architecture spanning input validation (`Validator`), rate limiting and anti-scraping (`RateLimiter`), PDPA data privacy, Content-Security-Policy (CSP), and safe DOM/Leaflet rendering.
+
+---
+
+## [2026-09-02] refactor | Strict Nonce-based CSP Hardening & Zero-Inline-Handlers
+- **Operation:** Mozilla Observatory CSP audit compliance hardening.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Eliminated `'unsafe-inline'` and `data:` from `script-src`, instituted per-request cryptographic nonces (`App\Core\CSP`), restricted `object-src 'none'`, and refactored all inline `onclick` attributes into declarative data-attributes in `app-security.js`.

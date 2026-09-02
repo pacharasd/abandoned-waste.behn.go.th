@@ -109,9 +109,46 @@
             trackLink.textContent = 'ดูรายละเอียดงาน';
             container.appendChild(trackLink);
 
-            return container;
         }
     };
+
+    // Declarative Event Delegation for Modals, Alerts, and UI actions (No inline 'onclick' needed)
+    document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('click', function(e) {
+            // 1. Alert Dismiss
+            const dismissBtn = e.target.closest('[data-dismiss="alert"]');
+            if (dismissBtn) {
+                const box = dismissBtn.closest('.flash-alert') || dismissBtn.parentElement;
+                if (box) box.remove();
+                return;
+            }
+
+            // 2. Modal Open
+            const openModalBtn = e.target.closest('[data-modal-open]');
+            if (openModalBtn) {
+                const targetId = openModalBtn.getAttribute('data-modal-open');
+                const modal = document.getElementById(targetId);
+                if (modal) modal.classList.remove('hidden');
+                return;
+            }
+
+            // 3. Modal Close
+            const closeModalBtn = e.target.closest('[data-modal-close]');
+            if (closeModalBtn) {
+                const targetId = closeModalBtn.getAttribute('data-modal-close');
+                const modal = document.getElementById(targetId);
+                if (modal) modal.classList.add('hidden');
+                return;
+            }
+
+            // 4. Modal Backdrop direct click
+            const backdropModal = e.target.closest('.modal-backdrop-auto');
+            if (backdropModal && e.target === backdropModal) {
+                backdropModal.classList.add('hidden');
+                return;
+            }
+        });
+    });
 
     window.AppSecurity = AppSecurity;
 })(window);

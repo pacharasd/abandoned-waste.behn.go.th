@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         tailwind.config = {
             theme: {
                 extend: {
@@ -34,7 +34,7 @@
         }
     </script>
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@latest"></script>
     <style>body { font-family: 'Kanit', sans-serif; }</style>
 </head>
 <body class="bg-gradient-to-br from-emerald-950 via-slate-900 to-slate-950 text-slate-100 min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
@@ -91,7 +91,7 @@
             </form>
 
             <div class="mt-8 pt-6 border-t border-slate-800">
-                <button type="button" onclick="fillAdminDemo()" class="w-full p-3 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl text-xs transition flex items-center justify-between">
+                <button type="button" id="fillDemoBtn" class="w-full p-3 bg-slate-800 hover:bg-slate-700/80 border border-slate-700 rounded-xl text-xs transition flex items-center justify-between">
                     <div class="flex items-center gap-2">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
                         <span class="font-bold text-slate-200">เข้าใช้งานด้วยบัญชี Admin อัตโนมัติ</span>
@@ -110,12 +110,13 @@
         </div>
     </div>
 
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         lucide.createIcons();
         function fillAdminDemo() {
             document.getElementById('emailInput').value = 'admin@waste.local';
             document.getElementById('passwordInput').value = 'admin1234';
         }
+        document.getElementById('fillDemoBtn')?.addEventListener('click', fillAdminDemo);
     </script>
 </body>
 </html>

@@ -181,7 +181,7 @@
 </div>
 
 <!-- Leaflet Map for this Schedule -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
     const map = L.map('scheduleReportsMap', {
         preferCanvas: true,

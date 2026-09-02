@@ -18,7 +18,7 @@
                 </button>
             </form>
 
-            <button type="button" onclick="document.getElementById('addScheduleModal').classList.remove('hidden')" class="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm shadow-emerald-600/20">
+            <button type="button" data-modal-open="addScheduleModal" class="px-3.5 sm:px-4 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition flex items-center gap-2 shadow-sm shadow-emerald-600/20">
                 <i data-lucide="plus" class="w-4 h-4"></i>
                 <span>สร้างรอบจัดเก็บใหม่</span>
             </button>
@@ -124,7 +124,7 @@
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>
 
-                                    <button type="button" onclick='openEditModal(<?= json_encode($s, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>)' class="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition inline-flex items-center" title="แก้ไข">
+                                    <button type="button" class="btn-edit-schedule p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition inline-flex items-center" data-schedule='<?= json_encode($s, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP) ?>' title="แก้ไข">
                                         <i data-lucide="edit-3" class="w-4 h-4"></i>
                                     </button>
 
@@ -158,7 +158,7 @@
                 <i data-lucide="calendar-plus" class="w-5 h-5 text-emerald-600"></i>
                 <span>สร้างรอบจัดเก็บขยะใหม่</span>
             </h3>
-            <button type="button" onclick="document.getElementById('addScheduleModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition">
+            <button type="button" data-modal-close="addScheduleModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -223,7 +223,7 @@
             </div>
 
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('addScheduleModal').classList.add('hidden')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                <button type="button" data-modal-close="addScheduleModal" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
@@ -242,7 +242,7 @@
                 <i data-lucide="edit-3" class="w-5 h-5 text-emerald-600"></i>
                 <span>แก้ไขรอบจัดเก็บขยะ</span>
             </h3>
-            <button type="button" onclick="document.getElementById('editScheduleModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition">
+            <button type="button" data-modal-close="editScheduleModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -307,7 +307,7 @@
             </div>
 
             <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button type="button" onclick="document.getElementById('editScheduleModal').classList.add('hidden')" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+                <button type="button" data-modal-close="editScheduleModal" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
                     ยกเลิก
                 </button>
                 <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
@@ -318,7 +318,7 @@
     </div>
 </div>
 
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 function openEditModal(data) {
     const baseUrl = '<?= htmlspecialchars($baseUrl ?: "") ?>';
     document.getElementById('editScheduleForm').action = baseUrl + '/admin/schedules/' + data.id + '/update';
@@ -342,6 +342,13 @@ function openEditModal(data) {
 
     document.getElementById('editScheduleModal').classList.remove('hidden');
 }
+
+document.querySelectorAll('.btn-edit-schedule').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const data = JSON.parse(this.getAttribute('data-schedule'));
+        openEditModal(data);
+    });
+});
 </script>
 
 <?php

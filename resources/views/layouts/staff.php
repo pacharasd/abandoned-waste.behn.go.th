@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         tailwind.config = {
             theme: {
                 extend: {
@@ -36,10 +36,13 @@
     
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Unified Client-side Security Helper -->
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
     
     <style>body { font-family: 'Kanit', sans-serif; }</style>
 </head>
@@ -78,7 +81,7 @@
                     <i data-lucide="<?= $flash['type'] === 'success' ? 'check-circle-2' : 'alert-circle' ?>" class="w-4 h-4 flex-shrink-0"></i>
                     <span><?= htmlspecialchars($flash['message']) ?></span>
                 </div>
-                <button onclick="this.parentElement.remove()" class="p-1 hover:opacity-75">
+                <button type="button" data-dismiss="alert" class="p-1 hover:opacity-75" aria-label="ปิดการแจ้งเตือน">
                     <i data-lucide="x" class="w-3.5 h-3.5"></i>
                 </button>
             </div>
@@ -90,7 +93,7 @@
         <?php if (isset($viewContent)) echo $viewContent; ?>
     </main>
 
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         lucide.createIcons();
     </script>
 </body>

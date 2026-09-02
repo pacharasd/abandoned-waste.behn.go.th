@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         tailwind.config = {
             theme: {
                 extend: {
@@ -37,16 +37,16 @@
     
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@latest"></script>
 
     <!-- Unified Client-side Security Helper -->
-    <script src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
     
     <style>
         html { scroll-behavior: smooth; }
@@ -65,7 +65,7 @@
 <body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden antialiased">
 
     <!-- Mobile Sidebar Backdrop Overlay -->
-    <div id="adminSidebarBackdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 lg:hidden hidden transition-opacity duration-300" onclick="toggleAdminSidebar(false)"></div>
+    <div id="adminSidebarBackdrop" class="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-40 lg:hidden hidden transition-opacity duration-300"></div>
 
     <!-- Sidebar Navigation (Desktop Static + Mobile Off-Canvas Drawer) -->
     <aside id="adminSidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 z-50 fixed inset-y-0 left-0 -translate-x-full lg:translate-x-0 lg:static lg:inset-auto transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none h-full">
@@ -79,7 +79,7 @@
                 </div>
             </div>
             <!-- Mobile Close Drawer Button -->
-            <button type="button" onclick="toggleAdminSidebar(false)" class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition" aria-label="ปิดเมนู">
+            <button type="button" data-sidebar-close class="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition" aria-label="ปิดเมนู">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -87,32 +87,32 @@
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/dashboard" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/dashboard') !== false || $_SERVER['REQUEST_URI'] === '/admin' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/dashboard" class="admin-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/dashboard') !== false || $_SERVER['REQUEST_URI'] === '/admin' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
                 <span>ภาพรวม Dashboard</span>
             </a>
 
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/reports" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/reports') !== false && strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/reports/export') === false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/reports" class="admin-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/reports') !== false && strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/reports/export') === false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <i data-lucide="inbox" class="w-4 h-4"></i>
                 <span>รายการแจ้งขยะ</span>
             </a>
 
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/schedules" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/schedules') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/schedules" class="admin-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/schedules') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <i data-lucide="calendar-days" class="w-4 h-4"></i>
                 <span>รอบวันจัดเก็บประจำเดือน</span>
             </a>
 
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/waste-types" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/waste-types') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/waste-types" class="admin-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/waste-types') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <i data-lucide="tags" class="w-4 h-4"></i>
                 <span>ประเภทขยะ</span>
             </a>
 
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/analytics" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/analytics') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/analytics" class="admin-nav-link flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/analytics') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
                 <span>รายงานและสถิติ</span>
             </a>
 
-            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/notifications" onclick="if(window.innerWidth < 1024) toggleAdminSidebar(false)" class="flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/notifications') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
+            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/notifications" class="admin-nav-link flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium text-sm transition <?= strpos($_SERVER['REQUEST_URI'] ?? '', '/admin/notifications') !== false ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'text-slate-400 hover:text-white hover:bg-slate-800/60' ?>">
                 <div class="flex items-center gap-3">
                     <i data-lucide="bell" class="w-4 h-4"></i>
                     <span>การแจ้งเตือน</span>
@@ -159,7 +159,7 @@
         <header class="h-16 bg-white border-b border-slate-200 px-4 sm:px-6 flex items-center justify-between flex-shrink-0 z-10">
             <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <!-- Hamburger Menu Button for Mobile/Tablet -->
-                <button type="button" onclick="toggleAdminSidebar(true)" class="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition flex-shrink-0" aria-label="เปิดเมนู">
+                <button type="button" data-sidebar-open class="lg:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition flex-shrink-0" aria-label="เปิดเมนู">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                 </button>
 
@@ -197,7 +197,7 @@
                         <i data-lucide="<?= $flash['type'] === 'success' ? 'check-circle-2' : ($flash['type'] === 'danger' ? 'alert-circle' : 'info') ?>" class="w-4 h-4 flex-shrink-0"></i>
                         <span><?= htmlspecialchars($flash['message']) ?></span>
                     </div>
-                    <button onclick="this.parentElement.remove()" class="p-1 hover:opacity-75">
+                    <button type="button" data-dismiss="alert" class="p-1 hover:opacity-75" aria-label="ปิดการแจ้งเตือน">
                         <i data-lucide="x" class="w-3.5 h-3.5"></i>
                     </button>
                 </div>
@@ -210,7 +210,7 @@
         </main>
     </div>
 
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         lucide.createIcons();
 
         function toggleAdminSidebar(open) {
@@ -229,6 +229,14 @@
             }
         }
 
+        // Attach listeners for sidebar triggers
+        document.querySelectorAll('[data-sidebar-open]').forEach(el => el.addEventListener('click', () => toggleAdminSidebar(true)));
+        document.querySelectorAll('[data-sidebar-close]').forEach(el => el.addEventListener('click', () => toggleAdminSidebar(false)));
+        document.getElementById('adminSidebarBackdrop')?.addEventListener('click', () => toggleAdminSidebar(false));
+        document.querySelectorAll('.admin-nav-link').forEach(el => el.addEventListener('click', () => {
+            if (window.innerWidth < 1024) toggleAdminSidebar(false);
+        }));
+
         // Close drawer with ESC key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
@@ -239,9 +247,7 @@
         // Close drawer on resize to desktop width
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 1024) {
-                const backdrop = document.getElementById('adminSidebarBackdrop');
-                if (backdrop) backdrop.classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
+                toggleAdminSidebar(false);
             }
         });
     </script>

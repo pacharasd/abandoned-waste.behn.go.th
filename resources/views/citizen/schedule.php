@@ -107,7 +107,7 @@
                         <?php endif; ?>
 
                         <div class="pt-1 flex items-center gap-2 flex-wrap">
-                            <button type="button" onclick="document.getElementById('scheduleOrphanPosterModal').classList.remove('hidden')" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold transition">
+                            <button type="button" data-modal-open="scheduleOrphanPosterModal" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold transition">
                                 <i data-lucide="image" class="w-4 h-4 text-teal-600"></i>
                                 <span>ดูรายการประเภทขยะกำพร้าที่รับตามประกาศ</span>
                             </button>
@@ -290,7 +290,7 @@
 </div>
 
 <!-- Countdown Timer Script -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('countdownContainer');
     if (!container) return;
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Modal: Poster Infographic for Schedule -->
-<div id="scheduleOrphanPosterModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+<div id="scheduleOrphanPosterModal" class="modal-backdrop-auto fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div class="flex items-center gap-2">
@@ -339,7 +339,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="text-[10px] text-slate-500">ขยะที่รีไซเคิลไม่ได้ ซาเล้งไม่รับ</span>
                 </div>
             </div>
-            <button type="button" onclick="document.getElementById('scheduleOrphanPosterModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
+            <button type="button" data-modal-close="scheduleOrphanPosterModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -348,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="p-3 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="text-slate-500">สำนักการสาธารณสุขและสิ่งแวดล้อม</span>
-            <button type="button" onclick="document.getElementById('scheduleOrphanPosterModal').classList.add('hidden')" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
+            <button type="button" data-modal-close="scheduleOrphanPosterModal" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
                 ปิดหน้าต่าง
             </button>
         </div>

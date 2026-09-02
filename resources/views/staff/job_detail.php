@@ -182,7 +182,7 @@
 </div>
 
 <!-- Leaflet Map Script -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
     const lat = <?= (float)$report['latitude'] ?>;
     const lng = <?= (float)$report['longitude'] ?>;

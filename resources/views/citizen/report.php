@@ -228,7 +228,7 @@
                                 </div>
                             </div>
 
-                            <button type="button" onclick="document.getElementById('orphanWasteModal').classList.remove('hidden')" class="px-3.5 py-2 bg-white hover:bg-teal-100/60 text-teal-800 text-xs font-bold rounded-xl border border-teal-300 transition flex items-center gap-1.5 flex-shrink-0 shadow-xs">
+                            <button type="button" data-modal-open="orphanWasteModal" class="px-3.5 py-2 bg-white hover:bg-teal-100/60 text-teal-800 text-xs font-bold rounded-xl border border-teal-300 transition flex items-center gap-1.5 flex-shrink-0 shadow-xs">
                                 <i data-lucide="image" class="w-4 h-4 text-teal-600"></i>
                                 <span>ดูโปสเตอร์ประกาศฉบับเต็ม</span>
                             </button>
@@ -430,7 +430,7 @@
 </div>
 
 <!-- Leaflet Map Script for Location Picker with Auto Reverse Geocoding -->
-<script>
+<script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
     let defaultLat = 13.8628;
     let defaultLng = 100.5145;
@@ -895,7 +895,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Modal: Official Poster Infographic View -->
-<div id="orphanWasteModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden" onclick="if(event.target === this) this.classList.add('hidden')">
+<div id="orphanWasteModal" class="modal-backdrop-auto fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
             <div class="flex items-center gap-2">
@@ -907,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <span class="text-[10px] text-slate-500">ขยะที่รีไซเคิลไม่ได้ ซาเล้งไม่รับ</span>
                 </div>
             </div>
-            <button type="button" onclick="document.getElementById('orphanWasteModal').classList.add('hidden')" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
+            <button type="button" data-modal-close="orphanWasteModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
                 <i data-lucide="x" class="w-5 h-5"></i>
             </button>
         </div>
@@ -916,7 +916,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="p-3 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
             <span class="text-slate-500">สำนักการสาธารณสุขและสิ่งแวดล้อม</span>
-            <button type="button" onclick="document.getElementById('orphanWasteModal').classList.add('hidden')" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
+            <button type="button" data-modal-close="orphanWasteModal" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
                 ปิดหน้าต่าง
             </button>
         </div>

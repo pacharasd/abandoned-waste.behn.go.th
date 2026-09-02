@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         tailwind.config = {
             theme: {
                 extend: {
@@ -39,16 +39,16 @@
     
     <!-- Leaflet CSS & JS for OpenStreetMap -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@latest"></script>
 
     <!-- html2canvas loaded with defer for non-blocking page load -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <!-- Unified Client-side Security Helper -->
-    <script src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
 
     <style>
         html {
@@ -222,7 +222,7 @@
                     <i data-lucide="<?= $flash['type'] === 'success' ? 'check-circle-2' : ($flash['type'] === 'danger' ? 'alert-circle' : 'info') ?>" class="w-5 h-5 flex-shrink-0"></i>
                     <span class="text-sm font-medium"><?= htmlspecialchars($flash['message']) ?></span>
                 </div>
-                <button onclick="this.parentElement.remove()" class="p-1 hover:opacity-75">
+                <button type="button" data-dismiss="alert" class="p-1 hover:opacity-75" aria-label="ปิดการแจ้งเตือน">
                     <i data-lucide="x" class="w-4 h-4"></i>
                 </button>
             </div>
@@ -280,7 +280,7 @@
     </footer>
 
     <!-- Initialize Lucide Icons & Mobile Menu -->
-    <script>
+    <script <?= \App\Core\CSP::nonceAttr() ?>>
         lucide.createIcons();
 
         document.getElementById('mobileMenuBtn')?.addEventListener('click', function() {
