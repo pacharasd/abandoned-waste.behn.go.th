@@ -8,6 +8,7 @@ use App\Core\Auth;
 use App\Core\NotificationService;
 use App\Core\ActivityLogger;
 use App\Core\Paginator;
+use App\Core\Validator;
 use App\Models\WasteType;
 
 class WasteTypeController {
@@ -33,8 +34,18 @@ class WasteTypeController {
         $icon = trim(Request::input('icon', 'trash-2'));
         $isActive = Request::input('is_active', '1');
 
-        if (empty($name)) {
-            Response::redirect('/admin/waste-types', 'กรุณาระบุชื่อประเภทขยะ', 'danger');
+        $validator = Validator::make([
+            'name' => $name,
+            'description' => $description,
+            'icon' => $icon
+        ], [
+            'name' => 'required|min:2|max:150',
+            'description' => 'max:1000',
+            'icon' => 'max:50'
+        ]);
+
+        if ($validator->fails()) {
+            Response::redirect('/admin/waste-types', $validator->allErrors()[0] ?? 'กรุณาระบุชื่อประเภทขยะให้ถูกต้อง', 'danger');
         }
 
         $imagePath = null;
@@ -67,8 +78,18 @@ class WasteTypeController {
         $icon = trim(Request::input('icon', 'trash-2'));
         $isActive = Request::input('is_active', '1');
 
-        if (empty($name)) {
-            Response::redirect('/admin/waste-types', 'กรุณาระบุชื่อประเภทขยะ', 'danger');
+        $validator = Validator::make([
+            'name' => $name,
+            'description' => $description,
+            'icon' => $icon
+        ], [
+            'name' => 'required|min:2|max:150',
+            'description' => 'max:1000',
+            'icon' => 'max:50'
+        ]);
+
+        if ($validator->fails()) {
+            Response::redirect('/admin/waste-types', $validator->allErrors()[0] ?? 'กรุณาระบุชื่อประเภทขยะให้ถูกต้อง', 'danger');
         }
 
         $data = [

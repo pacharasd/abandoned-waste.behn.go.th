@@ -35,4 +35,35 @@ class PDPA {
         }
         return $name;
     }
+
+    /**
+     * Clean phone number to digits only
+     */
+    public static function cleanPhone(?string $phone): string {
+        return $phone ? preg_replace('/[^0-9]/', '', $phone) : '';
+    }
+
+    /**
+     * Check if string is a valid Thai mobile or landline phone number
+     */
+    public static function isValidThaiPhone(?string $phone): bool {
+        if (!$phone) return false;
+        $clean = self::cleanPhone($phone);
+        return preg_match('/^0[689]\d{8}$/', $clean) === 1 || preg_match('/^0[2-57]\d{7,8}$/', $clean) === 1;
+    }
+
+    /**
+     * Mask email address for privacy (e.g. somchai@example.com -> s***i@example.com)
+     */
+    public static function maskEmail(?string $email): string {
+        if (!$email || strpos($email, '@') === false) return '-';
+        list($username, $domain) = explode('@', $email, 2);
+        $len = strlen($username);
+        if ($len <= 2) {
+            $maskedUser = substr($username, 0, 1) . '***';
+        } else {
+            $maskedUser = substr($username, 0, 1) . str_repeat('*', min(5, $len - 2)) . substr($username, -1);
+        }
+        return $maskedUser . '@' . $domain;
+    }
 }

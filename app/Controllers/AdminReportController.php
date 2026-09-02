@@ -8,6 +8,7 @@ use App\Core\Auth;
 use App\Core\NotificationService;
 use App\Core\ActivityLogger;
 use App\Core\Paginator;
+use App\Core\Validator;
 use App\Models\WasteReport;
 use App\Models\WasteType;
 
@@ -69,8 +70,18 @@ class AdminReportController {
         $actualWeight = Request::input('actual_weight', null);
 
         $allowedStatuses = ['รอรับเรื่อง', 'กำลังตรวจสอบ', 'กำลังดำเนินการ', 'จัดเก็บเรียบร้อยแล้ว', 'ยกเลิก'];
-        if (!in_array($newStatus, $allowedStatuses)) {
-            Response::redirect("/admin/reports/{$id}", 'สถานะไม่ถูกต้อง', 'danger');
+        $validator = Validator::make([
+            'status' => $newStatus,
+            'note' => $note,
+            'actual_weight' => $actualWeight
+        ], [
+            'status' => 'required|in:' . implode(',', $allowedStatuses),
+            'note' => 'max:1000',
+            'actual_weight' => 'numeric|min:0|max:100000'
+        ]);
+
+        if ($validator->fails()) {
+            Response::redirect("/admin/reports/{$id}", $validator->allErrors()[0] ?? 'ข้อมูลไม่ถูกต้อง', 'danger');
         }
 
         // Handle After Image Upload with Strict Magic Bytes & Extension Whitelisting

@@ -26,7 +26,14 @@ class Database {
             try {
                 self::$instance = new PDO($dsn, $username, $password, $options);
             } catch (PDOException $e) {
-                die("Database Connection Error: " . $e->getMessage());
+                error_log("Database Connection Error: " . $e->getMessage());
+                $isDebug = strtolower(getenv('APP_DEBUG') ?: 'false') === 'true';
+                if ($isDebug) {
+                    die("Database Connection Error: " . htmlspecialchars($e->getMessage()));
+                } else {
+                    http_response_code(500);
+                    die("เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล กรุณาติดต่อผู้ดูแลระบบ");
+                }
             }
         }
         return self::$instance;

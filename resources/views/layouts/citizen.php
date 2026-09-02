@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= \App\Core\CSRF::token() ?>">
     <title><?= htmlspecialchars($title ?? 'ระบบแจ้งจัดเก็บขยะไร้บ้าน') ?></title>
     
     <!-- Google Fonts (Kanit & Prompt for Modern Thai Typography) -->
@@ -45,6 +46,9 @@
 
     <!-- html2canvas loaded with defer for non-blocking page load -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Unified Client-side Security Helper -->
+    <script src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
 
     <style>
         html {

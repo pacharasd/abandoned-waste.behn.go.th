@@ -173,16 +173,21 @@ class WasteReport {
 
 
     public static function searchByPhone(string $phone): array {
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+        // Security: Prevent mass enumeration (require at least 9 digits)
+        if (strlen($cleanPhone) < 9) {
+            return [];
+        }
+
         $db = Database::connect();
         $stmt = $db->prepare("
             SELECT r.*, wt.name as waste_type_name, u.name as staff_name
             FROM waste_reports r
             LEFT JOIN waste_types wt ON wt.id = r.waste_type_id
             LEFT JOIN users u ON u.id = r.assigned_staff_id
-            WHERE r.reporter_phone LIKE ?
+            WHERE REPLACE(REPLACE(REPLACE(r.reporter_phone, '-', ''), ' ', ''), '.', '') LIKE ?
             ORDER BY r.created_at DESC
         ");
-        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
         $stmt->execute(["%{$cleanPhone}%"]);
         return $stmt->fetchAll();
     }

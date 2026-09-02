@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<?= \App\Core\CSRF::token() ?>">
     <title><?= htmlspecialchars($title ?? 'Admin Portal | ระบบแจ้งจัดเก็บขยะไร้บ้าน') ?></title>
     
     <!-- Google Fonts -->
@@ -43,6 +44,9 @@
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Unified Client-side Security Helper -->
+    <script src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
     
     <style>
         html { scroll-behavior: smooth; }

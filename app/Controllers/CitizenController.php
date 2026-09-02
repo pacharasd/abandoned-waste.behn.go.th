@@ -7,6 +7,8 @@ use App\Core\View;
 use App\Core\NotificationService;
 use App\Core\ActivityLogger;
 use App\Core\RateLimiter;
+use App\Core\Validator;
+use App\Core\PDPA;
 use App\Models\WasteReport;
 use App\Models\WasteType;
 use App\Models\CollectionSchedule;
@@ -59,21 +61,44 @@ class CitizenController {
             return;
         }
 
-        // 2. IP Rate Limiting (Max 10 submissions per hour per IP)
+        // 2. IP Rate Limiting (Anti-Spam Throttling: Max 5 submissions per 10 minutes per IP)
         $ip = Request::ip();
-        $rateLimitKey = 'report_submit:' . md5($ip);
-        if (RateLimiter::tooManyAttempts($rateLimitKey, 10, 3600)) {
-            Response::redirect('/report', 'คุณส่งข้อมูลแจ้งขยะถี่เกินกำหนด เพื่อความปลอดภัยของระบบ กรุณารอสักครู่ก่อนส่งใหม่', 'warning');
+        if (!RateLimiter::checkAndHit('citizen_report', $ip, 5, 600)) {
+            $wait = RateLimiter::getWaitTimeText('citizen_report', $ip);
+            $msg = "คุณส่งข้อมูลแจ้งขยะถี่เกินกำหนด เพื่อความปลอดภัยของระบบ กรุณารอ{$wait}ก่อนส่งใหม่อีกครั้ง";
+            if (Request::isAjax()) {
+                Response::json(['success' => false, 'message' => $msg], 429);
+            }
+            Response::redirect('/report', $msg, 'warning');
             return;
         }
-        RateLimiter::hit($rateLimitKey, 3600);
 
-        $name = trim(Request::input('reporter_name', ''));
-        $phone = trim(Request::input('reporter_phone', ''));
-        $address = trim(Request::input('address', ''));
-        $lat = (float)Request::input('latitude', 13.7563);
-        $lng = (float)Request::input('longitude', 100.5018);
-        $description = trim(Request::input('description', ''));
+        $inputData = [
+            'reporter_name' => Request::input('reporter_name', ''),
+            'reporter_phone' => Request::input('reporter_phone', ''),
+            'address' => Request::input('address', ''),
+            'latitude' => Request::input('latitude', 13.7563),
+            'longitude' => Request::input('longitude', 100.5018),
+            'description' => Request::input('description', '')
+        ];
+
+        // Unified Validation
+        $validator = Validator::make($inputData, [
+            'reporter_name' => 'required|min:2|max:150',
+            'reporter_phone' => 'required|thai_phone',
+            'address' => 'required|min:3|max:300',
+            'latitude' => 'required|numeric|coordinates:lat',
+            'longitude' => 'required|numeric|coordinates:lng',
+            'description' => 'max:1500'
+        ]);
+
+        $validated = $validator->validated();
+        $name = $validated['reporter_name'] ?? '';
+        $phone = $validated['reporter_phone'] ?? '';
+        $address = $validated['address'] ?? '';
+        $lat = (float)($validated['latitude'] ?? 13.7563);
+        $lng = (float)($validated['longitude'] ?? 100.5018);
+        $description = $validated['description'] ?? '';
 
         // Multiple Waste Types & Weights Parsing
         $selectedTypes = Request::input('waste_types', []);
@@ -87,7 +112,7 @@ class CitizenController {
                     $weight = isset($estimatedWeights[$typeId]) ? (float)$estimatedWeights[$typeId] : 0.0;
                     $items[] = [
                         'waste_type_id' => $typeId,
-                        'estimated_weight' => $weight
+                        'estimated_weight' => max(0.0, $weight)
                     ];
                 }
             }
@@ -100,18 +125,18 @@ class CitizenController {
                 $singleWeight = (float)Request::input('estimated_weight', 0.0);
                 $items[] = [
                     'waste_type_id' => $singleTypeId,
-                    'estimated_weight' => $singleWeight
+                    'estimated_weight' => max(0.0, $singleWeight)
                 ];
             }
         }
 
-        // Validation
-        $errors = [];
-        if (empty($name)) $errors[] = 'กรุณาระบุชื่อ-นามสกุล';
-        if (empty($phone)) $errors[] = 'กรุณาระบุเบอร์โทรศัพท์สำหรับติดต่อ';
-        if (empty($address)) $errors[] = 'กรุณาระบุรายละเอียดสถานที่จัดเก็บ';
-        if ($lat == 0 || $lng == 0) $errors[] = 'กรุณาเลือกตำแหน่งพิกัดบนแผนที่';
-        if (empty($items)) $errors[] = 'กรุณาเลือกประเภทขยะอย่างน้อย 1 ประเภท';
+        $errors = $validator->allErrors();
+        if ($lat == 0.0 || $lng == 0.0) {
+            $errors[] = 'กรุณาเลือกตำแหน่งพิกัดบนแผนที่';
+        }
+        if (empty($items)) {
+            $errors[] = 'กรุณาเลือกประเภทขยะอย่างน้อย 1 ประเภท';
+        }
 
         if (!empty($errors)) {
             if (Request::isAjax()) {
@@ -191,17 +216,30 @@ class CitizenController {
     }
 
     public function track(): void {
-        $search = Request::input('search', '');
+        $search = trim(Request::input('search', ''));
         $report = null;
         $phoneReports = [];
+        $searchWarning = null;
 
         if (!empty($search)) {
+            // Anti-Enumeration & Scraping Rate Limit (Max 30 searches per minute)
+            $ip = Request::ip();
+            if (!RateLimiter::checkAndHit('citizen_track', $ip, 30, 60)) {
+                $wait = RateLimiter::getWaitTimeText('citizen_track', $ip);
+                Response::redirect('/track', "คุณค้นหาถี่เกินกำหนด เพื่อความปลอดภัยของระบบกรุณารอ{$wait}ก่อนค้นหาใหม่", 'warning');
+            }
+
             if (strpos(strtoupper($search), 'WB-') === 0) {
                 $report = WasteReport::findByReportNumber($search);
             } else {
-                $phoneReports = WasteReport::searchByPhone($search);
-                if (count($phoneReports) === 1) {
-                    $report = WasteReport::findById((int)$phoneReports[0]['id']);
+                $cleanPhone = PDPA::cleanPhone($search);
+                if (strlen($cleanPhone) < 9) {
+                    $searchWarning = 'กรุณากรอกเบอร์โทรศัพท์อย่างน้อย 9-10 หลักเพื่อค้นหา (เพื่อความปลอดภัยของข้อมูลส่วนบุคคล)';
+                } else {
+                    $phoneReports = WasteReport::searchByPhone($cleanPhone);
+                    if (count($phoneReports) === 1) {
+                        $report = WasteReport::findById((int)$phoneReports[0]['id']);
+                    }
                 }
             }
         }
@@ -210,7 +248,8 @@ class CitizenController {
             'title' => 'ติดตามสถานะการจัดเก็บ | ระบบแจ้งจัดเก็บขยะไร้บ้าน',
             'search' => $search,
             'report' => $report,
-            'phoneReports' => $phoneReports
+            'phoneReports' => $phoneReports,
+            'searchWarning' => $searchWarning
         ]);
     }
 

@@ -30,3 +30,21 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 ## [2026-08-31] lint | Initial System Bootstrap Audit
 - **Operation:** Structure and graph integrity check.
 - **Result:** Graph healthy; 0 broken links, 0 orphaned notes.
+
+---
+
+## [2026-09-02] ingest | Essential Project & Wiki Commands
+- **Operation:** Ingestion and consolidation of frequently used operational, testing, server, Docker, and wiki maintenance commands.
+- **Created Pages:**
+  - `[[wiki/entities/essential-commands]]`
+- **Catalog Update:** Registered node into `[[wiki/index]]` and linked in `[[wiki/concepts/llm-wiki]]`.
+- **Key Synthesis:** Compiled a comprehensive quick-reference entity covering database migration (`migrate.php`), system verification test suite (`verify_system.php`), local server and XAMPP setups, Docker workflows, and LLM Wiki maintenance CLI tools.
+
+---
+
+## [2026-09-02] ingest | Security Architecture & Hardening Standards
+- **Operation:** Ingestion and formal compilation of the end-to-end full-stack security framework and hardening guidelines.
+- **Created Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Catalog Update:** Registered concept node into `[[wiki/index]]`.
+- **Key Synthesis:** Codified the Defense-in-Depth security architecture spanning input validation (`Validator`), rate limiting and anti-scraping (`RateLimiter`), PDPA data privacy, Content-Security-Policy (CSP), and safe DOM/Leaflet rendering.

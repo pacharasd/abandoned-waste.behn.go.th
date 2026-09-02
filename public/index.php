@@ -24,6 +24,16 @@ if (!headers_sent()) {
     header('X-XSS-Protection: 1; mode=block');
     header('Referrer-Policy: strict-origin-when-cross-origin');
     header('Permissions-Policy: geolocation=(self), camera=(), microphone=()');
+
+    // Content Security Policy (allows required CDNs without breaking dynamic scripts)
+    $csp = "default-src 'self'; "
+        . "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
+        . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; "
+        . "font-src 'self' https://fonts.gstatic.com data:; "
+        . "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; "
+        . "connect-src 'self'; "
+        . "frame-ancestors 'self';";
+    header("Content-Security-Policy: {$csp}");
 }
 
 // 1. PSR-4 Autoloader
@@ -41,6 +51,28 @@ spl_autoload_register(function ($class) {
 
     if (file_exists($file)) {
         require_once $file;
+    }
+});
+
+// Global Exception & Error Handler (Zero Information Leakage in Production)
+set_exception_handler(function (\Throwable $e) {
+    error_log("Unhandled Exception: " . $e->getMessage() . " in " . $e->getFile() . ":" . $e->getLine());
+    $isDebug = strtolower(getenv('APP_DEBUG') ?: 'false') === 'true';
+    if ($isDebug) {
+        http_response_code(500);
+        echo "<div style='font-family:sans-serif;padding:20px;background:#fee2e2;color:#991b1b;border:1px solid #f87171;border-radius:8px;margin:20px;'>";
+        echo "<h2 style='margin-top:0;'>💥 Uncaught Exception (Debug Mode)</h2>";
+        echo "<p><strong>Message:</strong> " . htmlspecialchars($e->getMessage()) . "</p>";
+        echo "<p><strong>Location:</strong> " . htmlspecialchars($e->getFile()) . ":" . $e->getLine() . "</p>";
+        echo "<pre style='background:#fff;padding:12px;border-radius:4px;overflow:auto;'>" . htmlspecialchars($e->getTraceAsString()) . "</pre>";
+        echo "</div>";
+    } else {
+        http_response_code(500);
+        if (\App\Core\Request::isAjax()) {
+            \App\Core\Response::json(['error' => 'Internal server error', 'message' => 'เกิดข้อผิดพลาดของระบบ กรุณาลองใหม่อีกครั้ง'], 500);
+        } else {
+            \App\Core\View::render('errors.500', ['title' => 'เกิดข้อผิดพลาดของระบบ (500)']);
+        }
     }
 });
 

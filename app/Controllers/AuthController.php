@@ -7,6 +7,7 @@ use App\Core\View;
 use App\Core\Auth;
 use App\Core\ActivityLogger;
 use App\Core\RateLimiter;
+use App\Core\Validator;
 use App\Models\User;
 
 class AuthController {
@@ -34,8 +35,17 @@ class AuthController {
             Response::redirect('/login', "คุณระบุรหัสผ่านผิดเกิน 5 ครั้ง เพื่อความปลอดภัยกรุณารออีก {$minutes} นาทีก่อนลองใหม่", 'danger');
         }
 
-        if (empty($email) || empty($password)) {
-            Response::redirect('/login', 'กรุณากรอกอีเมลและรหัสผ่าน', 'danger');
+        // Standardized Input Validation
+        $validator = Validator::make([
+            'email' => $email,
+            'password' => $password
+        ], [
+            'email' => 'required|email|max:150',
+            'password' => 'required|min:4|max:100'
+        ]);
+
+        if ($validator->fails()) {
+            Response::redirect('/login', $validator->allErrors()[0] ?? 'กรุณากรอกอีเมลและรหัสผ่านให้ถูกต้อง', 'danger');
         }
 
         $user = User::findByEmail($email);

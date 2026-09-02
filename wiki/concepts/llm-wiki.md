@@ -53,5 +53,6 @@ Unlike traditional retrieval-augmented generation (RAG) which retrieves disjoint
 ## 🔗 Related Entities & Syntheses
 - [[obsidian]]
 - [[vannevar-bush-memex]]
+- [[entities/essential-commands|Essential Commands]]
 - [[persistent-compounding-knowledge]]
 - [[knowledge-compounding-paradigm]]

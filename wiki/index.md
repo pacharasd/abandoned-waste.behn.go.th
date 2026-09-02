@@ -8,12 +8,14 @@ Welcome to the **Master Index** of the LLM Wiki. This catalog is continuously ma
 - [[concepts/llm-wiki|LLM Wiki]] — The overarching architecture of LLM-maintained persistent markdown knowledge bases.
 - [[concepts/persistent-compounding-knowledge|Persistent Compounding Knowledge]] — The property where newly ingested knowledge increases the contextual value of the whole graph.
 - [[concepts/rag-vs-wiki|RAG vs. LLM Wiki]] — Architectural and workflow comparison between ephemeral RAG retrieval and compiled wiki graphs.
+- [[concepts/security-architecture|Security Architecture & Hardening Standards]] — Multi-layered defense-in-depth security framework covering validation, anti-enumeration, rate-limiting, and safe DOM rendering.
 - [[concepts/wikilinks|WikiLinks]] — Double-bracket associative linking syntax powering backlink graphs.
 
 
 ---
 
 ## 🏢 Entities (`wiki/entities/`)
+- [[entities/essential-commands|Essential Commands & Operational CLI]] — Catalog of critical operational commands for database migrations, testing, local servers, Docker, and wiki maintenance.
 - [[entities/obsidian|Obsidian]] — Markdown editor, Graph View visualizer, and user interface IDE for this knowledge base.
 - [[entities/vannevar-bush-memex|Vannevar Bush & Memex]] — Historical 1945 conceptual foundation of associative trails and personal memory machines.
 

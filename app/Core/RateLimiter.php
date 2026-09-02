@@ -82,6 +82,31 @@ class RateLimiter {
     }
 
     /**
+     * Helper to check and record attempt in one atomic call
+     * Returns TRUE if request is permitted, FALSE if throttled/blocked
+     */
+    public static function checkAndHit(string $action, string $ip, int $maxAttempts, int $decaySeconds = 60): bool {
+        $key = $action . ':' . md5($ip);
+        if (self::tooManyAttempts($key, $maxAttempts, $decaySeconds)) {
+            return false;
+        }
+        self::hit($key, $decaySeconds);
+        return true;
+    }
+
+    /**
+     * Get human-readable Thai wait duration message
+     */
+    public static function getWaitTimeText(string $action, string $ip): string {
+        $key = $action . ':' . md5($ip);
+        $remaining = self::availableIn($key);
+        if ($remaining <= 0) return 'ไม่กี่วินาที';
+        if ($remaining < 60) return "อีก {$remaining} วินาที";
+        $mins = (int)ceil($remaining / 60);
+        return "อีก {$mins} นาที";
+    }
+
+    /**
      * Clear rate limit records for a key
      */
     public static function clear(string $key): void {

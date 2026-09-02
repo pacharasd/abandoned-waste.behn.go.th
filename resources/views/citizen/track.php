@@ -26,7 +26,18 @@
             </form>
         </div>
 
-        <?php if (!empty($search) && empty($report) && empty($phoneReports)): ?>
+        <?php if (!empty($searchWarning)): ?>
+            <!-- Security / Validation Warning -->
+            <div class="bg-amber-50 border border-amber-200 rounded-3xl p-6 text-center space-y-2">
+                <div class="w-12 h-12 bg-amber-100 text-amber-700 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-base font-bold text-amber-900"><?= htmlspecialchars($searchWarning) ?></h3>
+                <p class="text-xs text-amber-700">เพื่อความปลอดภัยและการคุ้มครองข้อมูลส่วนบุคคล (PDPA) กรุณาระบุเบอร์โทรศัพท์ที่ถูกต้องแบบเต็มจำนวน</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if (!empty($search) && empty($report) && empty($phoneReports) && empty($searchWarning)): ?>
             <!-- Not Found State -->
             <div class="bg-white rounded-3xl p-12 text-center border border-slate-200 space-y-4">
                 <div class="w-16 h-16 bg-slate-100 text-slate-400 rounded-full flex items-center justify-center mx-auto">

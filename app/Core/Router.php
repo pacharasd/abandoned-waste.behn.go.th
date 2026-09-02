@@ -105,6 +105,30 @@ class Router {
             if (!Auth::check() || (!Auth::isStaff() && !Auth::isAdmin())) {
                 Response::redirect('/login', 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้ (เฉพาะเจ้าหน้าที่)', 'danger');
             }
+        } elseif (strpos($name, 'throttle:') === 0) {
+            list(, $config) = explode(':', $name, 2);
+            $parts = explode(',', $config);
+            $maxAttempts = max(1, (int)($parts[0] ?? 60));
+            $decaySeconds = max(1, (int)($parts[1] ?? 60));
+            $ip = Request::ip();
+            $action = 'route_' . md5(Request::uri());
+
+            if (!RateLimiter::checkAndHit($action, $ip, $maxAttempts, $decaySeconds)) {
+                $waitText = RateLimiter::getWaitTimeText($action, $ip);
+                http_response_code(429);
+                if (Request::isAjax()) {
+                    Response::json([
+                        'success' => false,
+                        'message' => "คุณส่งคำขอถี่เกินกำหนด กรุณารอ{$waitText}ก่อนลองใหม่อีกครั้ง"
+                    ], 429);
+                } else {
+                    View::render('errors.429', [
+                        'title' => 'คำขอมากเกินกำหนด (429 Too Many Requests)',
+                        'waitText' => $waitText
+                    ]);
+                }
+                exit;
+            }
         }
     }
 }

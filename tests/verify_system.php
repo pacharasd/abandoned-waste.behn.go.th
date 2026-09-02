@@ -208,6 +208,67 @@ try {
     assertTest(file_exists(BASE_PATH . '/public/uploads/.htaccess'), "File Defense: public/uploads/.htaccess execution blocker exists");
     assertTest(file_exists(BASE_PATH . '/public/.htaccess'), "Server Hardening: public/.htaccess security headers configured");
 
+    // 15. Security Suite: Unified Validator Engine Tests
+    $validData = [
+        'name' => 'นายสมบูรณ์ ปลอดภัย',
+        'email' => 'secure@waste.local',
+        'phone' => '0891234567',
+        'lat' => 13.8591,
+        'lng' => 100.5217,
+        'status' => 'กำลังดำเนินการ'
+    ];
+    $v1 = \App\Core\Validator::make($validData, [
+        'name' => 'required|min:3|max:100',
+        'email' => 'required|email',
+        'phone' => 'required|thai_phone',
+        'lat' => 'required|numeric|coordinates:lat',
+        'lng' => 'required|numeric|coordinates:lng',
+        'status' => 'required|in:รอรับเรื่อง,กำลังตรวจสอบ,กำลังดำเนินการ,จัดเก็บเรียบร้อยแล้ว,ยกเลิก'
+    ]);
+    assertTest($v1->passes(), "Validator: Valid dataset passed all rules");
+
+    $invalidData = [
+        'name' => 'A',
+        'email' => 'invalid-email-string',
+        'phone' => '12345',
+        'lat' => 999.0,
+        'status' => 'status_not_allowed'
+    ];
+    $v2 = \App\Core\Validator::make($invalidData, [
+        'name' => 'required|min:3',
+        'email' => 'required|email',
+        'phone' => 'required|thai_phone',
+        'lat' => 'required|coordinates:lat',
+        'status' => 'required|in:รอรับเรื่อง,กำลังตรวจสอบ,กำลังดำเนินการ,จัดเก็บเรียบร้อยแล้ว,ยกเลิก'
+    ]);
+    assertTest($v2->fails(), "Validator: Invalid dataset rejected correctly");
+    assertTest(count($v2->allErrors()) >= 4, "Validator: Captured all field error messages (" . count($v2->allErrors()) . " errors)");
+
+    // 16. Security Suite: Anti-Enumeration & Phone Search Protection
+    $enumAttackResult = WasteReport::searchByPhone('0');
+    assertTest(count($enumAttackResult) === 0, "PDPA Defense: Single digit search '0' rejected from enumerating database");
+    $shortPhoneResult = WasteReport::searchByPhone('0812');
+    assertTest(count($shortPhoneResult) === 0, "PDPA Defense: Short substring search (< 9 digits) rejected");
+    $legitPhoneResult = WasteReport::searchByPhone('089-999-8888');
+    assertTest(count($legitPhoneResult) > 0, "PDPA Defense: Legitimate full phone search successfully found records");
+
+    // 17. Security Suite: Atomic Throttling & Wait Message
+    $throttleAction = 'test_throttle_action';
+    $testIp = '192.168.1.99';
+    \App\Core\RateLimiter::clear($throttleAction . ':' . md5($testIp));
+    assertTest(\App\Core\RateLimiter::checkAndHit($throttleAction, $testIp, 2, 60), "RateLimiter: Attempt 1 permitted");
+    assertTest(\App\Core\RateLimiter::checkAndHit($throttleAction, $testIp, 2, 60), "RateLimiter: Attempt 2 permitted");
+    assertTest(!\App\Core\RateLimiter::checkAndHit($throttleAction, $testIp, 2, 60), "RateLimiter: Attempt 3 throttled/blocked");
+    $waitMsg = \App\Core\RateLimiter::getWaitTimeText($throttleAction, $testIp);
+    assertTest(strpos($waitMsg, 'วินาที') !== false || strpos($waitMsg, 'นาที') !== false, "RateLimiter: Generated friendly wait duration ($waitMsg)");
+    \App\Core\RateLimiter::clear($throttleAction . ':' . md5($testIp));
+
+    // 18. Security Suite: Front-End Security Files & Error Pages
+    assertTest(file_exists(BASE_PATH . '/public/assets/js/app-security.js'), "Front-End: app-security.js client utility installed");
+    assertTest(file_exists(BASE_PATH . '/resources/views/errors/403.php'), "Error Views: 403 Forbidden page exists");
+    assertTest(file_exists(BASE_PATH . '/resources/views/errors/429.php'), "Error Views: 429 Too Many Requests page exists");
+    assertTest(file_exists(BASE_PATH . '/resources/views/errors/500.php'), "Error Views: 500 Internal Server Error page exists");
+
     echo "=======================================================\n";
     echo "📊 TEST RESULTS: {$passCount} PASSED, {$failCount} FAILED\n";
     echo "=======================================================\n";
