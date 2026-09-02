@@ -11,6 +11,8 @@ Router::post('/report', 'CitizenController@submitReport');
 Router::get('/success', 'CitizenController@success');
 Router::get('/track', 'CitizenController@track');
 Router::get('/api/map-points', 'CitizenController@getMapPointsApi');
+Router::get('/api/reverse-geocode', 'CitizenController@reverseGeocodeApi');
+Router::get('/api/search-places', 'CitizenController@searchPlacesApi');
 
 // ==========================================
 // 2. AUTHENTICATION ROUTES

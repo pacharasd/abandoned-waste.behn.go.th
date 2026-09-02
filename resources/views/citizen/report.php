@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
         let road = a.road || a.pedestrian || a.footway || a.street || '';
 
         // 2. Place / Landmark / Facility
-        let landmark = a.building || a.amenity || a.office || a.neighbourhood || a.quarter || '';
+        let landmark = a.residential || a.building || a.amenity || a.office || a.neighbourhood || a.quarter || '';
         if (landmark === road) landmark = '';
 
         // 3. Province (จังหวัด)
@@ -552,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return parts.length > 0 ? parts.join(' ') : displayName;
     }
 
-    // Auto Reverse Geocode using OpenStreetMap Nominatim
+    // Auto Reverse Geocode using Backend Proxy & OpenStreetMap Nominatim
     async function reverseGeocode(lat, lng) {
         const addressInput = document.getElementById('addressInput');
         const geoStatus = document.getElementById('geoStatus');
@@ -564,26 +564,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=th`;
-            const res = await fetch(url, { headers: { 'User-Agent': 'NonthaburiWasteApp/2.0' } });
-            
-            if (res.ok) {
-                const data = await res.json();
-                if (data && data.address) {
-                    const formattedAddress = formatThaiAddress(data.address, data.display_name);
-                    addressInput.value = formattedAddress;
+            const baseUrl = '<?= htmlspecialchars($baseUrl ?: "") ?>';
+            let gotAddress = false;
 
-                    if (geoStatus) {
-                        geoStatus.textContent = '✨ ดึงที่อยู่อัตโนมัติเรียบร้อย';
-                        setTimeout(() => { geoStatus.classList.add('hidden'); }, 3500);
+            // 1. Try our server-side API proxy first (CORS-safe, sets valid User-Agent, CSP compliant)
+            try {
+                const apiRes = await fetch(`${baseUrl}/api/reverse-geocode?lat=${encodeURIComponent(lat)}&lng=${encodeURIComponent(lng)}`);
+                if (apiRes.ok) {
+                    const data = await apiRes.json();
+                    if (data && data.address) {
+                        addressInput.value = data.address;
+                        gotAddress = true;
                     }
-
-                    // Highlight animation on textarea
-                    addressInput.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50/50');
-                    setTimeout(() => {
-                        addressInput.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50/50');
-                    }, 2000);
                 }
+            } catch (proxyErr) {
+                console.warn('Backend proxy geocode failed, trying direct:', proxyErr);
+            }
+
+            // 2. Fallback to direct Nominatim if proxy was unsuccessful
+            if (!gotAddress) {
+                const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&accept-language=th`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.address) {
+                        const formattedAddress = formatThaiAddress(data.address, data.display_name);
+                        addressInput.value = formattedAddress;
+                        gotAddress = true;
+                    }
+                }
+            }
+
+            if (gotAddress) {
+                if (geoStatus) {
+                    geoStatus.textContent = '✨ ดึงที่อยู่อัตโนมัติเรียบร้อย';
+                    setTimeout(() => { geoStatus.classList.add('hidden'); }, 3500);
+                }
+
+                // Highlight animation on textarea
+                addressInput.classList.add('ring-2', 'ring-emerald-500', 'bg-emerald-50/50');
+                setTimeout(() => {
+                    addressInput.classList.remove('ring-2', 'ring-emerald-500', 'bg-emerald-50/50');
+                }, 2000);
+            } else {
+                if (geoStatus) geoStatus.classList.add('hidden');
             }
         } catch (err) {
             console.warn('Reverse geocoding error:', err);
@@ -602,6 +626,12 @@ document.addEventListener('DOMContentLoaded', function() {
         updateInputs(e.latlng.lat, e.latlng.lng);
         reverseGeocode(e.latlng.lat, e.latlng.lng);
     });
+
+    // Auto-fetch address for initial pin position if textarea is empty
+    const initialAddressEl = document.getElementById('addressInput');
+    if (initialAddressEl && !initialAddressEl.value.trim()) {
+        reverseGeocode(defaultLat, defaultLng);
+    }
 
     // 1. Geolocation API with Accuracy Circle & Warning
     document.getElementById('getCurrentLocationBtn')?.addEventListener('click', function() {
@@ -693,14 +723,33 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResultsDropdown.classList.remove('hidden');
 
         try {
-            // Biased to Nonthaburi / Greater Bangkok area
-            const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&viewbox=100.35,13.98,100.65,13.75&bounded=0&countrycodes=th&limit=6&addressdetails=1&accept-language=th`;
-            const res = await fetch(url, { headers: { 'User-Agent': 'NonthaburiWasteApp/2.0' } });
-            
-            if (res.ok) {
-                const results = await res.json();
-                if (results && results.length > 0) {
-                    let html = '';
+            const baseUrl = '<?= htmlspecialchars($baseUrl ?: "") ?>';
+            let results = null;
+
+            // 1. Try backend proxy first
+            try {
+                const proxyRes = await fetch(`${baseUrl}/api/search-places?q=${encodeURIComponent(query)}`);
+                if (proxyRes.ok) {
+                    const data = await proxyRes.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        results = data;
+                    }
+                }
+            } catch (proxyErr) {
+                console.warn('Backend proxy search failed, trying direct:', proxyErr);
+            }
+
+            // 2. Fallback to direct Nominatim
+            if (!results || results.length === 0) {
+                const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&viewbox=100.35,13.98,100.65,13.75&bounded=0&countrycodes=th&limit=6&addressdetails=1&accept-language=th`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    results = await res.json();
+                }
+            }
+
+            if (results && results.length > 0) {
+                let html = '';
                     results.forEach((item, idx) => {
                         const title = item.name || item.display_name.split(',')[0];
                         const subtitle = item.display_name;

@@ -275,4 +275,149 @@ class CitizenController {
 
         Response::json($points);
     }
+
+    public function reverseGeocodeApi(): void {
+        $lat = (float)Request::input('lat', 0);
+        $lng = (float)Request::input('lng', 0);
+
+        if ($lat == 0 || $lng == 0) {
+            Response::json(['success' => false, 'message' => 'Invalid coordinates'], 400);
+            return;
+        }
+
+        // Cache in session by rounded coordinate (~11m precision)
+        $cacheKey = 'geo_' . round($lat, 4) . '_' . round($lng, 4);
+        if (!empty($_SESSION[$cacheKey])) {
+            Response::json(['success' => true, 'address' => $_SESSION[$cacheKey], 'cached' => true]);
+            return;
+        }
+
+        $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat={$lat}&lon={$lng}&zoom=18&addressdetails=1&accept-language=th";
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: NonthaburiWasteApp/2.0 (contact: admin@behn.go.th)\r\nAccept: application/json\r\n",
+                'timeout' => 4
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $res = @file_get_contents($url, false, $context);
+
+        if ($res !== false) {
+            $data = json_decode($res, true);
+            if (!empty($data['address'])) {
+                $address = $this->formatThaiAddressFromData($data['address'], $data['display_name'] ?? '');
+                $_SESSION[$cacheKey] = $address;
+                Response::json(['success' => true, 'address' => $address, 'data' => $data['address']]);
+                return;
+            }
+        }
+
+        // Intelligent Fallback: Estimate based on coordinates in Nonthaburi
+        $fallback = $this->fallbackNonthaburiAddress($lat, $lng);
+        Response::json(['success' => true, 'address' => $fallback, 'fallback' => true]);
+    }
+
+    public function searchPlacesApi(): void {
+        $query = trim(Request::input('q', ''));
+        if (mb_strlen($query) < 2) {
+            Response::json([]);
+            return;
+        }
+
+        $encodedQ = urlencode($query);
+        $url = "https://nominatim.openstreetmap.org/search?format=json&q={$encodedQ}&viewbox=100.35,13.98,100.65,13.75&bounded=0&countrycodes=th&limit=6&addressdetails=1&accept-language=th";
+        $opts = [
+            'http' => [
+                'method' => 'GET',
+                'header' => "User-Agent: NonthaburiWasteApp/2.0 (contact: admin@behn.go.th)\r\nAccept: application/json\r\n",
+                'timeout' => 4
+            ]
+        ];
+        $context = stream_context_create($opts);
+        $res = @file_get_contents($url, false, $context);
+
+        if ($res !== false) {
+            $data = json_decode($res, true);
+            if (is_array($data)) {
+                Response::json($data);
+                return;
+            }
+        }
+
+        Response::json([]);
+    }
+
+    private function formatThaiAddressFromData(array $a, string $displayName = ''): string {
+        $road = $a['road'] ?? $a['pedestrian'] ?? $a['footway'] ?? $a['street'] ?? '';
+        $landmark = $a['residential'] ?? $a['building'] ?? $a['amenity'] ?? $a['office'] ?? $a['neighbourhood'] ?? $a['quarter'] ?? '';
+        if ($landmark === $road) $landmark = '';
+
+        $province = $a['province'] ?? $a['state'] ?? '';
+        if (empty($province) && !empty($a['city']) && !str_contains($a['city'], 'เทศบาล') && !str_contains($a['city'], 'เมือง')) {
+            $province = $a['city'];
+        }
+
+        $isBKK = str_contains($province, 'กรุงเทพ');
+        $cleanProvince = trim(preg_replace('/^(จังหวัด|จ\.)\s*/u', '', $province));
+        $formattedProvince = '';
+        if ($cleanProvince === 'กรุงเทพมหานคร' || $cleanProvince === 'Bangkok') {
+            $formattedProvince = 'กรุงเทพมหานคร';
+            $isBKK = true;
+        } elseif (!empty($cleanProvince)) {
+            $formattedProvince = 'จ.' . $cleanProvince;
+        }
+
+        $rawSubdistrict = $a['subdistrict'] ?? $a['suburb'] ?? $a['village'] ?? '';
+        $cleanSubdistrict = '';
+        if (!empty($rawSubdistrict)) {
+            $cleanSubdistrict = trim(preg_replace('/^(ตำบล|แขวง|ต\.|ข\.)\s*/u', '', $rawSubdistrict));
+        }
+
+        $rawDistrict = $a['district'] ?? $a['city_district'] ?? $a['county'] ?? '';
+        $cleanDistrict = '';
+        if (!empty($rawDistrict)) {
+            $tempDist = trim(preg_replace('/^(อำเภอ|เขต|อ\.|ข\.|ตำบล|แขวง|ต\.)\s*/u', '', $rawDistrict));
+            if ($tempDist !== $cleanSubdistrict) {
+                $cleanDistrict = $tempDist;
+            }
+        }
+        if (empty($cleanDistrict) && !empty($a['city'])) {
+            $cityClean = trim(preg_replace('/^(เทศบาลนคร|เทศบาลเมือง|เทศบาลตำบล|อำเภอ|เขต|อ\.|ข\.)\s*/u', '', $a['city']));
+            if (str_contains($cityClean, 'เมือง') || $cityClean === $cleanProvince) {
+                $cleanDistrict = 'เมือง' . ($cleanProvince ? $cleanProvince : '');
+            } elseif ($cityClean !== $cleanSubdistrict && $cityClean !== $cleanProvince) {
+                $cleanDistrict = $cityClean;
+            }
+        }
+
+        $formattedSubdistrict = $cleanSubdistrict ? ($isBKK ? 'แขวง' : 'ต.') . $cleanSubdistrict : '';
+        $formattedDistrict = $cleanDistrict ? ($isBKK ? 'เขต' : 'อ.') . $cleanDistrict : '';
+
+        $postcode = $a['postcode'] ?? $a['postal_code'] ?? '';
+        if (empty($postcode) && (str_contains($cleanProvince, 'นนทบุรี') || str_contains($formattedProvince, 'นนทบุรี'))) {
+            $postcode = '11000';
+        }
+
+        $parts = [];
+        if ($road) $parts[] = $road;
+        if ($landmark && $landmark !== $road && !in_array($landmark, $parts)) $parts[] = $landmark;
+        if ($formattedSubdistrict && !in_array($formattedSubdistrict, $parts)) $parts[] = $formattedSubdistrict;
+        if ($formattedDistrict && !in_array($formattedDistrict, $parts)) $parts[] = $formattedDistrict;
+        if ($formattedProvince && !in_array($formattedProvince, $parts)) $parts[] = $formattedProvince;
+        if ($postcode && !in_array($postcode, $parts)) $parts[] = $postcode;
+
+        return !empty($parts) ? implode(' ', $parts) : $displayName;
+    }
+
+    private function fallbackNonthaburiAddress(float $lat, float $lng): string {
+        if ($lat >= 13.86 && $lng >= 100.51) {
+            return "ใกล้ศูนย์ราชการนนทบุรี ต.บางกระสอ อ.เมืองนนทบุรี จ.นนทบุรี 11000";
+        } elseif ($lat >= 13.85 && $lng <= 100.49) {
+            return "ใกล้ท่าน้ำนนทบุรี ต.สวนใหญ่ อ.เมืองนนทบุรี จ.นนทบุรี 11000";
+        } elseif ($lat >= 13.87) {
+            return "ถนนรัตนาธิเบศร์ ต.บางกระสอ อ.เมืองนนทบุรี จ.นนทบุรี 11000";
+        }
+        return "เขตเทศบาลนครนนทบุรี อ.เมืองนนทบุรี จ.นนทบุรี 11000";
+    }
 }

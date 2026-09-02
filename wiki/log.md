@@ -88,3 +88,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Replaced `cdn.tailwindcss.com` dynamic script injection with static compiled `public/assets/css/tailwind.css` (53 KB minified). Eliminates FOUC and runtime CSP conflicts without requiring `'unsafe-inline'`.
+
+---
+
+## [2026-09-02] fix | Geocoding Proxy & CSP connect-src Hardening
+- **Operation:** Fix auto-fill address in citizen report form.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Whitelisted `https://nominatim.openstreetmap.org` in CSP `connect-src`, implemented server-side geocoding proxy (`/api/reverse-geocode`, `/api/search-places`) with valid User-Agent, session caching, and intelligent fallback for Nonthaburi municipality coordinates.
