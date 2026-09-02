@@ -474,27 +474,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial coordinates
     updateInputs(defaultLat, defaultLng);
 
-    // Smart Thai Address Formatter from OpenStreetMap Nominatim with Postal Code Support
+    // Smart Thai Address Formatter from OpenStreetMap Nominatim with High Precision Detection
     function formatThaiAddress(a, displayName) {
         if (!a) return displayName || '';
 
-        // 1. Road / Soi / Street
-        let road = a.road || a.pedestrian || a.footway || a.street || '';
-
-        // 2. Place / Landmark / Facility
-        let landmark = a.residential || a.building || a.amenity || a.office || a.neighbourhood || a.quarter || '';
-        if (landmark === road) landmark = '';
-
-        // 3. Province (จังหวัด)
+        // 1. Province (จังหวัด)
         let province = a.province || a.state || '';
-        if (!province && a.city && !a.city.includes('เทศบาล') && !a.city.includes('เมือง')) {
+        if (!province && a.city && !a.city.includes('เทศบาล') && !a.city.includes('ตำบล') && !a.city.includes('อำเภอ')) {
             province = a.city;
         }
 
         let isBKK = province.includes('กรุงเทพ');
-
-        // Clean province prefix
-        let cleanProvince = province.replace(/^จังหวัด\s*/, '').replace(/^จ\.\s*/, '').trim();
+        let cleanProvince = province.replace(/^(จังหวัด|จ\.)\s*/, '').trim();
         let formattedProvince = '';
         if (cleanProvince === 'กรุงเทพมหานคร' || cleanProvince === 'Bangkok') {
             formattedProvince = 'กรุงเทพมหานคร';
@@ -503,47 +494,95 @@ document.addEventListener('DOMContentLoaded', function() {
             formattedProvince = 'จ.' + cleanProvince;
         }
 
-        // 4. Sub-district (ตำบล / แขวง)
-        let rawSubdistrict = a.subdistrict || a.suburb || a.village || '';
+        // 2. Sub-district (ตำบล / แขวง) - Check explicit tags first
         let cleanSubdistrict = '';
-        if (rawSubdistrict) {
-            cleanSubdistrict = rawSubdistrict.replace(/^(ตำบล|แขวง|ต\.|ข\.)\s*/, '').trim();
+        let subCandidates = [a.subdistrict, a.city_district, a.city, a.suburb];
+        for (let cand of subCandidates) {
+            if (!cand) continue;
+            let trimmed = cand.trim();
+            if (/^(ตำบล|แขวง|ต\.|ข\.)/i.test(trimmed)) {
+                cleanSubdistrict = trimmed.replace(/^(ตำบล|แขวง|ต\.|ข\.)\s*/, '').trim();
+                break;
+            }
+        }
+        if (!cleanSubdistrict && a.subdistrict) {
+            cleanSubdistrict = a.subdistrict.replace(/^(ตำบล|แขวง|ต\.|ข\.)\s*/, '').trim();
+        }
+        if (!cleanSubdistrict && a.suburb && !a.suburb.includes('เทศบาล')) {
+            cleanSubdistrict = a.suburb.replace(/^(ตำบล|แขวง|ต\.|ข\.)\s*/, '').trim();
         }
 
-        // 5. District (อำเภอ / เขต)
-        let rawDistrict = a.district || a.city_district || a.county || '';
+        // 3. District (อำเภอ / เขต)
         let cleanDistrict = '';
-        if (rawDistrict) {
-            let tempDist = rawDistrict.replace(/^(อำเภอ|เขต|อ\.|ข\.|ตำบล|แขวง|ต\.)\s*/, '').trim();
-            // Avoid duplicate if district name equals subdistrict name
-            if (tempDist !== cleanSubdistrict) {
-                cleanDistrict = tempDist;
+        let distCandidates = [a.county, a.district, a.city];
+        for (let cand of distCandidates) {
+            if (!cand) continue;
+            let trimmed = cand.trim();
+            if (/^(อำเภอ|เขต|อ\.)/i.test(trimmed)) {
+                cleanDistrict = trimmed.replace(/^(อำเภอ|เขต|อ\.)\s*/, '').trim();
+                break;
             }
         }
-        // Fallback for district if missing or in city
-        if (!cleanDistrict && a.city) {
-            let cityClean = a.city.replace(/^(เทศบาลนคร|เทศบาลเมือง|เทศบาลตำบล|อำเภอ|เขต|อ\.|ข\.)\s*/, '').trim();
-            if (cityClean.includes('เมือง') || cityClean === cleanProvince) {
-                cleanDistrict = 'เมือง' + (cleanProvince ? cleanProvince : '');
-            } else if (cityClean && cityClean !== cleanSubdistrict && cityClean !== cleanProvince) {
-                cleanDistrict = cityClean;
-            }
+        if (!cleanDistrict && a.county) {
+            cleanDistrict = a.county.replace(/^(อำเภอ|เขต|อ\.)\s*/, '').trim();
+        }
+        if (!cleanDistrict && (cleanProvince.includes('นนทบุรี') || formattedProvince.includes('นนทบุรี'))) {
+            cleanDistrict = 'เมืองนนทบุรี';
         }
 
         let formattedSubdistrict = cleanSubdistrict ? (isBKK ? 'แขวง' : 'ต.') + cleanSubdistrict : '';
         let formattedDistrict = cleanDistrict ? (isBKK ? 'เขต' : 'อ.') + cleanDistrict : '';
 
-        // 6. Postal Code (รหัสไปรษณีย์)
+        // 4. Postal Code (รหัสไปรษณีย์)
         let postcode = a.postcode || a.postal_code || '';
         if (!postcode && (cleanProvince.includes('นนทบุรี') || formattedProvince.includes('นนทบุรี'))) {
-            // Default postcode for Nonthaburi municipality
             postcode = '11000';
         }
 
-        // 7. Assemble neatly without duplicate segments
+        // 5. Road / Soi / Junction
+        let road = a.road || a.pedestrian || a.footway || a.street || '';
+        let junction = a.junction || '';
+        let roadSegment = '';
+        if (road && junction) {
+            roadSegment = `${road} (${junction})`;
+        } else if (road) {
+            roadSegment = road;
+        } else if (junction) {
+            roadSegment = junction;
+        }
+
+        // 6. Landmark / Housing Estate / Village / Community
+        let landmarkParts = [];
+        if (a.residential) {
+            let res = a.residential.trim();
+            if (!res.startsWith('หมู่บ้าน') && !res.startsWith('โครงการ')) {
+                res = 'หมู่บ้าน' + res;
+            }
+            landmarkParts.push(res);
+        }
+        if (a.building || a.amenity || a.office) {
+            let bld = a.building || a.amenity || a.office;
+            if (!landmarkParts.includes(bld) && bld !== road) landmarkParts.push(bld);
+        }
+        if (a.neighbourhood && !landmarkParts.includes(a.neighbourhood) && a.neighbourhood !== road) {
+            landmarkParts.push(a.neighbourhood);
+        }
+        if (a.village) {
+            let vil = a.village.trim();
+            if (!vil.startsWith('หมู่บ้าน') && !vil.startsWith('ชุมชน') && !vil.startsWith('บ้าน')) {
+                vil = 'ชุมชน' + vil;
+            }
+            if (!a.residential || !a.residential.includes(a.village)) {
+                landmarkParts.push(vil);
+            }
+        }
+
+        let landmarkSegment = landmarkParts.join(' ');
+
+        // 7. Assemble components
         let parts = [];
-        if (road) parts.push(road);
-        if (landmark && landmark !== road && !parts.includes(landmark)) parts.push(landmark);
+        if (landmarkSegment) parts.push(landmarkSegment);
+        if (roadSegment && !parts.includes(roadSegment)) parts.push(roadSegment);
         if (formattedSubdistrict && !parts.includes(formattedSubdistrict)) parts.push(formattedSubdistrict);
         if (formattedDistrict && !parts.includes(formattedDistrict)) parts.push(formattedDistrict);
         if (formattedProvince && !parts.includes(formattedProvince)) parts.push(formattedProvince);

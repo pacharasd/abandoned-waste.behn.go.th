@@ -349,12 +349,9 @@ class CitizenController {
     }
 
     private function formatThaiAddressFromData(array $a, string $displayName = ''): string {
-        $road = $a['road'] ?? $a['pedestrian'] ?? $a['footway'] ?? $a['street'] ?? '';
-        $landmark = $a['residential'] ?? $a['building'] ?? $a['amenity'] ?? $a['office'] ?? $a['neighbourhood'] ?? $a['quarter'] ?? '';
-        if ($landmark === $road) $landmark = '';
-
+        // 1. Province (จังหวัด)
         $province = $a['province'] ?? $a['state'] ?? '';
-        if (empty($province) && !empty($a['city']) && !str_contains($a['city'], 'เทศบาล') && !str_contains($a['city'], 'เมือง')) {
+        if (empty($province) && !empty($a['city']) && !str_contains($a['city'], 'เทศบาล') && !str_contains($a['city'], 'ตำบล') && !str_contains($a['city'], 'อำเภอ')) {
             $province = $a['city'];
         }
 
@@ -368,40 +365,95 @@ class CitizenController {
             $formattedProvince = 'จ.' . $cleanProvince;
         }
 
-        $rawSubdistrict = $a['subdistrict'] ?? $a['suburb'] ?? $a['village'] ?? '';
+        // 2. Sub-district (ตำบล / แขวง)
         $cleanSubdistrict = '';
-        if (!empty($rawSubdistrict)) {
-            $cleanSubdistrict = trim(preg_replace('/^(ตำบล|แขวง|ต\.|ข\.)\s*/u', '', $rawSubdistrict));
+        $subCandidates = [$a['subdistrict'] ?? '', $a['city_district'] ?? '', $a['city'] ?? '', $a['suburb'] ?? ''];
+        foreach ($subCandidates as $cand) {
+            $trimmed = trim($cand);
+            if (!empty($trimmed) && preg_match('/^(ตำบล|แขวง|ต\.|ข\.)/u', $trimmed)) {
+                $cleanSubdistrict = trim(preg_replace('/^(ตำบล|แขวง|ต\.|ข\.)\s*/u', '', $trimmed));
+                break;
+            }
+        }
+        if (empty($cleanSubdistrict) && !empty($a['subdistrict'])) {
+            $cleanSubdistrict = trim(preg_replace('/^(ตำบล|แขวง|ต\.|ข\.)\s*/u', '', $a['subdistrict']));
+        }
+        if (empty($cleanSubdistrict) && !empty($a['suburb']) && !str_contains($a['suburb'], 'เทศบาล')) {
+            $cleanSubdistrict = trim(preg_replace('/^(ตำบล|แขวง|ต\.|ข\.)\s*/u', '', $a['suburb']));
         }
 
-        $rawDistrict = $a['district'] ?? $a['city_district'] ?? $a['county'] ?? '';
+        // 3. District (อำเภอ / เขต)
         $cleanDistrict = '';
-        if (!empty($rawDistrict)) {
-            $tempDist = trim(preg_replace('/^(อำเภอ|เขต|อ\.|ข\.|ตำบล|แขวง|ต\.)\s*/u', '', $rawDistrict));
-            if ($tempDist !== $cleanSubdistrict) {
-                $cleanDistrict = $tempDist;
+        $distCandidates = [$a['county'] ?? '', $a['district'] ?? '', $a['city'] ?? ''];
+        foreach ($distCandidates as $cand) {
+            $trimmed = trim($cand);
+            if (!empty($trimmed) && preg_match('/^(อำเภอ|เขต|อ\.)/u', $trimmed)) {
+                $cleanDistrict = trim(preg_replace('/^(อำเภอ|เขต|อ\.)\s*/u', '', $trimmed));
+                break;
             }
         }
-        if (empty($cleanDistrict) && !empty($a['city'])) {
-            $cityClean = trim(preg_replace('/^(เทศบาลนคร|เทศบาลเมือง|เทศบาลตำบล|อำเภอ|เขต|อ\.|ข\.)\s*/u', '', $a['city']));
-            if (str_contains($cityClean, 'เมือง') || $cityClean === $cleanProvince) {
-                $cleanDistrict = 'เมือง' . ($cleanProvince ? $cleanProvince : '');
-            } elseif ($cityClean !== $cleanSubdistrict && $cityClean !== $cleanProvince) {
-                $cleanDistrict = $cityClean;
-            }
+        if (empty($cleanDistrict) && !empty($a['county'])) {
+            $cleanDistrict = trim(preg_replace('/^(อำเภอ|เขต|อ\.)\s*/u', '', $a['county']));
+        }
+        if (empty($cleanDistrict) && (str_contains($cleanProvince, 'นนทบุรี') || str_contains($formattedProvince, 'นนทบุรี'))) {
+            $cleanDistrict = 'เมืองนนทบุรี';
         }
 
         $formattedSubdistrict = $cleanSubdistrict ? ($isBKK ? 'แขวง' : 'ต.') . $cleanSubdistrict : '';
         $formattedDistrict = $cleanDistrict ? ($isBKK ? 'เขต' : 'อ.') . $cleanDistrict : '';
 
+        // 4. Postal Code
         $postcode = $a['postcode'] ?? $a['postal_code'] ?? '';
         if (empty($postcode) && (str_contains($cleanProvince, 'นนทบุรี') || str_contains($formattedProvince, 'นนทบุรี'))) {
             $postcode = '11000';
         }
 
+        // 5. Road / Soi / Junction
+        $road = $a['road'] ?? $a['pedestrian'] ?? $a['footway'] ?? $a['street'] ?? '';
+        $junction = $a['junction'] ?? '';
+        $roadSegment = '';
+        if ($road && $junction) {
+            $roadSegment = "{$road} ({$junction})";
+        } elseif ($road) {
+            $roadSegment = $road;
+        } elseif ($junction) {
+            $roadSegment = $junction;
+        }
+
+        // 6. Landmark / Housing Estate / Village / Community
+        $landmarkParts = [];
+        if (!empty($a['residential'])) {
+            $res = trim($a['residential']);
+            if (!str_starts_with($res, 'หมู่บ้าน') && !str_starts_with($res, 'โครงการ')) {
+                $res = 'หมู่บ้าน' . $res;
+            }
+            $landmarkParts[] = $res;
+        }
+        if (!empty($a['building']) || !empty($a['amenity']) || !empty($a['office'])) {
+            $bld = $a['building'] ?? $a['amenity'] ?? $a['office'] ?? '';
+            if (!empty($bld) && !in_array($bld, $landmarkParts) && $bld !== $road) {
+                $landmarkParts[] = $bld;
+            }
+        }
+        if (!empty($a['neighbourhood']) && !in_array($a['neighbourhood'], $landmarkParts) && $a['neighbourhood'] !== $road) {
+            $landmarkParts[] = $a['neighbourhood'];
+        }
+        if (!empty($a['village'])) {
+            $vil = trim($a['village']);
+            if (!str_starts_with($vil, 'หมู่บ้าน') && !str_starts_with($vil, 'ชุมชน') && !str_starts_with($vil, 'บ้าน')) {
+                $vil = 'ชุมชน' . $vil;
+            }
+            if (empty($a['residential']) || !str_contains($a['residential'], $a['village'])) {
+                $landmarkParts[] = $vil;
+            }
+        }
+
+        $landmarkSegment = implode(' ', $landmarkParts);
+
+        // 7. Assemble components
         $parts = [];
-        if ($road) $parts[] = $road;
-        if ($landmark && $landmark !== $road && !in_array($landmark, $parts)) $parts[] = $landmark;
+        if ($landmarkSegment) $parts[] = $landmarkSegment;
+        if ($roadSegment && !in_array($roadSegment, $parts)) $parts[] = $roadSegment;
         if ($formattedSubdistrict && !in_array($formattedSubdistrict, $parts)) $parts[] = $formattedSubdistrict;
         if ($formattedDistrict && !in_array($formattedDistrict, $parts)) $parts[] = $formattedDistrict;
         if ($formattedProvince && !in_array($formattedProvince, $parts)) $parts[] = $formattedProvince;
