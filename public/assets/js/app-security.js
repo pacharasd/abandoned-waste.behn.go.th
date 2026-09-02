@@ -7,6 +7,25 @@
 (function(window) {
     'use strict';
 
+    // Auto-attach CSP nonce to dynamically created <style> tags (e.g. Tailwind Play CDN runtime styles)
+    try {
+        const scriptEl = document.currentScript || document.querySelector('script[nonce]');
+        const nonce = scriptEl ? (scriptEl.nonce || scriptEl.getAttribute('nonce')) : '';
+        if (nonce) {
+            const origCreateElement = document.createElement;
+            document.createElement = function(tagName, options) {
+                const el = origCreateElement.call(document, tagName, options);
+                if (tagName && typeof tagName === 'string' && tagName.toLowerCase() === 'style') {
+                    el.setAttribute('nonce', nonce);
+                    el.nonce = nonce;
+                }
+                return el;
+            };
+        }
+    } catch (e) {
+        // Fallback gracefully
+    }
+
     const AppSecurity = {
         /**
          * Retrieve active CSRF token from document meta tag

@@ -72,3 +72,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Pinned external CDN assets (Tailwind CSS v3.4.16, Leaflet v1.9.4, Lucide Icons v0.468.0, Chart.js v4.4.7, html2canvas v1.4.1) and secured each with SHA-384 cryptographic hashes (`integrity="sha384-..."`) and `crossorigin="anonymous"`.
+
+---
+
+## [2026-09-02] refactor | CSP style-src Hardening & Zero Inline Styles
+- **Operation:** Mozilla Observatory style-src audit compliance hardening.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Removed `'unsafe-inline'` from `style-src` in `App\Core\CSP`, extracted all inline `<style>` and `style="..."` attributes into `public/assets/css/app-style.css`, and hooked dynamic style creation to inherit CSP nonces.

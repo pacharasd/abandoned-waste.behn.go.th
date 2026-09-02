@@ -153,8 +153,8 @@
                         <div class="relative px-2 sm:px-6">
                             <!-- Track Line -->
                             <div class="absolute left-6 right-6 top-3.5 -translate-y-1/2 h-1 bg-slate-200 z-0 rounded-full"></div>
-                            <div class="absolute left-6 top-3.5 -translate-y-1/2 h-1 bg-emerald-500 z-0 rounded-full transition-all duration-500" 
-                                 style="width: calc(<?= ($currentIdx / 3) * 100 ?>% - 12px);"></div>
+                            <div id="stepperProgressBar" class="absolute left-6 top-3.5 -translate-y-1/2 h-1 bg-emerald-500 z-0 rounded-full transition-all duration-500" 
+                                 data-progress-width="calc(<?= ($currentIdx / 3) * 100 ?>% - 12px)"></div>
 
                             <!-- Steps Grid -->
                             <div class="relative z-10 grid grid-cols-4 gap-1">
@@ -321,6 +321,11 @@
 <?php if (!empty($report)): ?>
 <script <?= \App\Core\CSP::nonceAttr() ?>>
 document.addEventListener('DOMContentLoaded', function() {
+    const stepperBar = document.getElementById('stepperProgressBar');
+    if (stepperBar && stepperBar.dataset.progressWidth) {
+        stepperBar.style.width = stepperBar.dataset.progressWidth;
+    }
+
     const lat = <?= (float)$report['latitude'] ?>;
     const lng = <?= (float)$report['longitude'] ?>;
 

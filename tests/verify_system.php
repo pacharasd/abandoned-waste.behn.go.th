@@ -283,6 +283,13 @@ try {
     assertTest(strpos($cspHeader, "object-src 'none'") !== false, "CSP: object-src explicitly restricted to 'none'");
     assertTest(strpos($cspHeader, "base-uri 'self'") !== false, "CSP: base-uri explicitly restricted to 'self'");
 
+    // Verify style-src specifically blocks unsafe-inline and uses nonce
+    preg_match('/style-src([^;]+);/', $cspHeader, $styleSrcMatches);
+    $styleSrcContent = $styleSrcMatches[1] ?? '';
+    assertTest(strpos($styleSrcContent, "'unsafe-inline'") === false, "CSP: style-src directive strictly blocks 'unsafe-inline'");
+    assertTest(strpos($styleSrcContent, "'nonce-") !== false, "CSP: style-src directive enforced with cryptographic nonce");
+    assertTest(file_exists(BASE_PATH . '/public/assets/css/app-style.css'), "Front-End: External app-style.css stylesheet installed for zero-inline-styles");
+
     // 20. Security Suite: Strict Transport Security (HSTS) Compliance
     $htaccessContent = file_get_contents(BASE_PATH . '/public/.htaccess');
     assertTest(strpos($htaccessContent, 'Strict-Transport-Security') !== false, "HSTS: Strict-Transport-Security directive configured in public/.htaccess");

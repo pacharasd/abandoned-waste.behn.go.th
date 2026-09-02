@@ -51,7 +51,9 @@ tags:
 - **Strict Nonce-based Content-Security-Policy (`App\Core\CSP`):**
   - กำหนดค่า CSP ตามมาตรฐานความปลอดภัยสูงสุดของ Mozilla Observatory / OWASP
   - **ลบ `'unsafe-inline'` และ `data:` ออกจาก `script-src` 100%**: ป้องกันการฉีดสคริปต์ (XSS) ทุกรูปแบบ
-  - **Cryptographic Nonce Per-Request:** ใช้ `App\Core\CSP::nonce()` สุ่มรหัส 128-bit random base64 ผูกกับแท็ก `<script nonce="...">` ทุกแท็ก
+  - **ลบ `'unsafe-inline'` ออกจาก `style-src` 100%**: บล็อก Inline Styles ทั้งหมด (`style-src 'self' 'nonce-...' https://fonts.googleapis.com https://unpkg.com`) เพื่อป้องกันการดัดแปลงรูปลักษณ์หรือขโมยข้อมูลผ่าน CSS Injection
+  - **Zero Inline Styles Architecture:** แยกสไตล์ทั้งหมดเข้าสู่ `public/assets/css/app-style.css` และใช้ CSS Classes แทนการเขียน `style="..."` ในแท็ก HTML ทุกจุด
+  - **Cryptographic Nonce Per-Request:** ใช้ `App\Core\CSP::nonce()` สุ่มรหัส 128-bit random base64 ผูกกับแท็ก `<script nonce="...">` และสไตล์ไดนามิก
   - **จำกัด `object-src 'none'`:** ปิดกั้นการแทรก Flash, Java Applets หรือ Object ภายนอกทั้งหมด
   - **จำกัด `base-uri 'self'`:** ป้องกันการโจมตี Base Tag Hijacking
   - **จำกัด `frame-ancestors 'self'`:** ป้องกัน Clickjacking

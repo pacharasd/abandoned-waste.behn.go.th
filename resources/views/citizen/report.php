@@ -21,7 +21,7 @@
                 <?= \App\Core\CSRF::field() ?>
 
                 <!-- Anti-Bot Honeypot Trap (Hidden from real users) -->
-                <div style="display:none !important; visibility:hidden !important; opacity:0 !important; position:absolute !important; left:-9999px !important;">
+                <div class="form-honeypot" aria-hidden="true">
                     <label for="sys_bot_trap_field">Do not fill this field</label>
                     <input type="text" name="sys_bot_trap_field" id="sys_bot_trap_field" tabindex="-1" autocomplete="off">
                 </div>

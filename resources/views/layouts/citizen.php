@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     
+    <!-- Unified Client-side Security Helper (Pre-attaches CSP nonces) -->
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
+
     <!-- Tailwind CSS CDN -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
     <script <?= \App\Core\CSP::nonceAttr() ?>>
@@ -47,59 +50,8 @@
     <!-- html2canvas loaded with defer for non-blocking page load -->
     <script <?= \App\Core\CSP::nonceAttr() ?> defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 
-    <!-- Unified Client-side Security Helper -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
-
-    <style>
-        html {
-            scroll-behavior: smooth;
-        }
-        body { 
-            font-family: 'Kanit', sans-serif; 
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        /* Smooth Fluid Transitions & Active Micro-interactions */
-        button, a {
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn-fluid, button[type="submit"] {
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-fluid:active, button[type="submit"]:active {
-            transform: scale(0.98);
-        }
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-        }
-        /* Leaflet z-index containment */
-        .leaflet-container {
-            z-index: 1 !important;
-        }
-        .leaflet-pane {
-            z-index: 1 !important;
-        }
-        /* Sleek fluid scrollbar */
-        ::-webkit-scrollbar {
-            width: 7px;
-            height: 7px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f8fafc;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 9999px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .leaflet-top, .leaflet-bottom {
-            z-index: 10 !important;
-        }
-    </style>
+    <!-- Application External Stylesheet (CSP Hardened - No inline styles) -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/css/app-style.css">
 </head>
 <body class="bg-slate-50 text-slate-800 flex flex-col min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
 

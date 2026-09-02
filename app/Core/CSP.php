@@ -36,7 +36,7 @@ class CSP {
         $nonce = self::nonce();
         return "default-src 'self'; "
             . "script-src 'self' 'nonce-{$nonce}' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; "
-            . "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; "
+            . "style-src 'self' 'nonce-{$nonce}' https://fonts.googleapis.com https://unpkg.com; "
             . "font-src 'self' https://fonts.gstatic.com data:; "
             . "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; "
             . "connect-src 'self'; "

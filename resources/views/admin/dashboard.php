@@ -336,28 +336,26 @@ document.addEventListener('DOMContentLoaded', function() {
             if (statusFilter === 'in_progress' && !['กำลังดำเนินการ'].includes(pt.status)) return;
             if (statusFilter === 'completed' && pt.status !== 'จัดเก็บเรียบร้อยแล้ว') return;
 
-            let color = '#f59e0b';
-            if (pt.status === 'จัดเก็บเรียบร้อยแล้ว') color = '#10b981';
-            else if (pt.status === 'กำลังดำเนินการ') color = '#3b82f6';
-            else if (pt.status === 'ยกเลิก') color = '#ef4444';
+            let pinColorClass = 'pin-amber';
+            if (pt.status === 'จัดเก็บเรียบร้อยแล้ว') pinColorClass = 'pin-emerald';
+            else if (pt.status === 'กำลังดำเนินการ') pinColorClass = 'pin-blue';
+            else if (pt.status === 'ยกเลิก') pinColorClass = 'pin-rose';
 
             const icon = L.divIcon({
                 className: 'admin-pin',
-                html: `<div style="background-color: ${color}; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center;">
-                         <div style="background-color: white; width: 6px; height: 6px; border-radius: 50%;"></div>
-                       </div>`,
+                html: `<div class="map-marker-pin-sm ${pinColorClass}"><div class="map-marker-dot"></div></div>`,
                 iconSize: [24, 24],
                 iconAnchor: [12, 12]
             });
 
             const marker = L.marker([pt.lat, pt.lng], { icon: icon }).addTo(adminMap);
             marker.bindPopup(`
-                <div style="font-family: 'Kanit', sans-serif; min-width: 200px;">
-                    <div style="font-weight: bold; font-size: 14px; margin-bottom: 2px;">${pt.report_number}</div>
-                    <div style="font-size: 12px; color: #059669; font-weight: 500;">🏷️ ${pt.waste_type}</div>
-                    <div style="font-size: 11px; color: #64748b; margin: 4px 0;">📍 ${pt.address}</div>
-                    <div style="font-size: 11px; margin-bottom: 6px;">👤 ผู้แจ้ง: ${pt.reporter_name} (${pt.reporter_phone})</div>
-                    <a href="${pt.detail_url}" style="display:block; text-align:center; padding: 5px 8px; background: #0f172a; color: white; border-radius: 6px; font-size: 11px; text-decoration: none; font-weight: bold;">
+                <div class="map-popup-card">
+                    <div class="map-popup-title">${AppSecurity.escapeHtml(pt.report_number)}</div>
+                    <div class="map-popup-type">🏷️ ${AppSecurity.escapeHtml(pt.waste_type)}</div>
+                    <div class="map-popup-addr">📍 ${AppSecurity.escapeHtml(pt.address)}</div>
+                    <div class="map-popup-meta">👤 ผู้แจ้ง: ${AppSecurity.escapeHtml(pt.reporter_name)} (${AppSecurity.escapeHtml(pt.reporter_phone)})</div>
+                    <a href="${AppSecurity.escapeHtml(pt.detail_url)}" class="map-popup-link-dark">
                         เปิดดูและจัดการรายการ
                     </a>
                 </div>

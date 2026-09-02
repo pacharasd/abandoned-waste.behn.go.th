@@ -500,21 +500,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const markers = [];
 
             points.forEach(pt => {
-                let markerColor = '#f59e0b'; // pending/yellow
+                let pinColorClass = 'pin-amber';
                 if (pt.status === 'จัดเก็บเรียบร้อยแล้ว') {
-                    markerColor = '#10b981'; // green
+                    pinColorClass = 'pin-emerald';
                 } else if (['รับงานแล้ว', 'กำลังเดินทาง', 'กำลังดำเนินการ'].includes(pt.status)) {
-                    markerColor = '#3b82f6'; // blue
+                    pinColorClass = 'pin-blue';
                 } else if (pt.status === 'ยกเลิก') {
-                    markerColor = '#64748b'; // gray
+                    pinColorClass = 'pin-slate';
                 }
 
                 // Custom DivIcon marker
                 const customIcon = L.divIcon({
                     className: 'custom-pin',
-                    html: `<div style="background-color: ${markerColor}; width: 26px; height: 26px; border-radius: 50%; border: 3px solid white; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center;">
-                             <div style="background-color: white; width: 6px; height: 6px; border-radius: 50%;"></div>
-                           </div>`,
+                    html: `<div class="map-marker-pin ${pinColorClass}"><div class="map-marker-dot"></div></div>`,
                     iconSize: [26, 26],
                     iconAnchor: [13, 13]
                 });
@@ -522,23 +520,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const marker = L.marker([pt.lat, pt.lng], { icon: customIcon }).addTo(map);
                 
                 const popupContent = `
-                    <div style="font-family: 'Kanit', sans-serif; min-width: 200px; padding: 4px;">
-                        <div style="font-weight: bold; font-size: 14px; color: #0f172a; margin-bottom: 4px;">
-                            ${pt.report_number}
-                        </div>
-                        <div style="font-size: 12px; color: #059669; font-weight: 500; margin-bottom: 4px;">
-                            🏷️ ${pt.waste_type}
-                        </div>
-                        <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">
-                            📍 ${pt.address}
-                        </div>
-                        <div style="display: inline-block; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: bold; background: #ecfdf5; color: #065f46; margin-bottom: 8px;">
-                            สถานะ: ${pt.status}
-                        </div>
-                        <div style="border-top: 1px solid #e2e8f0; padding-top: 6px;">
-                            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/track?search=${pt.report_number}" style="display:block; text-align:center; padding: 4px 8px; background: #059669; color: white; border-radius: 6px; font-size: 11px; text-decoration: none; font-weight: 500;">
-                                ดูความคืบหน้า
-                            </a>
+                    <div class="map-popup-card">
+                        <div class="map-popup-title">${AppSecurity.escapeHtml(pt.report_number)}</div>
+                        <div class="map-popup-type">🏷️ ${AppSecurity.escapeHtml(pt.waste_type)}</div>
+                        <div class="map-popup-addr">📍 ${AppSecurity.escapeHtml(pt.address)}</div>
+                        <div class="map-popup-badge">สถานะ: ${AppSecurity.escapeHtml(pt.status)}</div>
+                        <div class="map-popup-divider">
+                            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/track?search=${encodeURIComponent(pt.report_number)}" class="map-popup-link">ดูความคืบหน้า</a>
                         </div>
                     </div>
                 `;

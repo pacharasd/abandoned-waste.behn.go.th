@@ -10,6 +10,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Unified Client-side Security Helper (Pre-attaches CSP nonces) -->
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
+
     <!-- Tailwind CSS -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
     <script <?= \App\Core\CSP::nonceAttr() ?>>
@@ -41,10 +44,8 @@
     <!-- Lucide Icons -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu" crossorigin="anonymous"></script>
 
-    <!-- Unified Client-side Security Helper -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
-    
-    <style>body { font-family: 'Kanit', sans-serif; }</style>
+    <!-- Application External Stylesheet (CSP Hardened - No inline styles) -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/css/app-style.css">
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col antialiased">
 

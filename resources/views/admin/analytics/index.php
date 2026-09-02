@@ -80,7 +80,7 @@
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
                                     <div class="w-24 bg-slate-100 rounded-full h-2 overflow-hidden">
-                                        <div class="bg-emerald-500 h-2 rounded-full" style="width: <?= $pct ?>%;"></div>
+                                        <div class="bg-emerald-500 h-2 rounded-full analytics-progress" data-width="<?= $pct ?>%"></div>
                                     </div>
                                     <span class="text-xs text-slate-500 font-mono"><?= number_format($pct, 1) ?>%</span>
                                 </div>
@@ -97,6 +97,14 @@
     </div>
 
 </div>
+
+<script <?= \App\Core\CSP::nonceAttr() ?>>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.analytics-progress').forEach(el => {
+        if (el.dataset.width) el.style.width = el.dataset.width;
+    });
+});
+</script>
 
 <?php
 $viewContent = ob_get_clean();
