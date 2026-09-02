@@ -292,6 +292,18 @@ try {
     $indexContent = file_get_contents(BASE_PATH . '/public/index.php');
     assertTest(strpos($indexContent, 'Strict-Transport-Security') !== false, "HSTS: Strict-Transport-Security header sent by PHP application in index.php");
 
+    // 21. Security Suite: Subresource Integrity (SRI) Compliance
+    $citizenLayout = file_get_contents(BASE_PATH . '/resources/views/layouts/citizen.php');
+    $adminLayout = file_get_contents(BASE_PATH . '/resources/views/layouts/admin.php');
+    $staffLayout = file_get_contents(BASE_PATH . '/resources/views/layouts/staff.php');
+
+    assertTest(strpos($citizenLayout, 'integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA"') !== false, "SRI: Tailwind CSS locked with SHA-384 integrity in citizen layout");
+    assertTest(strpos($citizenLayout, 'integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"') !== false, "SRI: Leaflet JS locked with SHA-384 integrity in citizen layout");
+    assertTest(strpos($citizenLayout, 'integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu"') !== false, "SRI: Lucide Icons locked with SHA-384 integrity in citizen layout");
+    assertTest(strpos($citizenLayout, 'integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H"') !== false, "SRI: html2canvas locked with SHA-384 integrity in citizen layout");
+    assertTest(strpos($adminLayout, 'integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC"') !== false, "SRI: Chart.js locked with SHA-384 integrity in admin layout");
+    assertTest(strpos($staffLayout, 'integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"') !== false, "SRI: Leaflet JS locked with SHA-384 integrity in staff layout");
+
     echo "=======================================================\n";
     echo "📊 TEST RESULTS: {$passCount} PASSED, {$failCount} FAILED\n";
     echo "=======================================================\n";

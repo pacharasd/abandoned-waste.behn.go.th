@@ -64,3 +64,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Implemented `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` across Apache (`public/.htaccess`) and PHP (`public/index.php`) satisfying hstspreload.org requirements.
+
+---
+
+## [2026-09-02] refactor | Subresource Integrity (SRI) Protection & Pinned CDN Scripts
+- **Operation:** Mozilla Observatory SRI audit compliance hardening.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Pinned external CDN assets (Tailwind CSS v3.4.16, Leaflet v1.9.4, Lucide Icons v0.468.0, Chart.js v4.4.7, html2canvas v1.4.1) and secured each with SHA-384 cryptographic hashes (`integrity="sha384-..."`) and `crossorigin="anonymous"`.

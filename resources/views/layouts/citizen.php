@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS CDN -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
     <script <?= \App\Core\CSP::nonceAttr() ?>>
         tailwind.config = {
             theme: {
@@ -38,14 +38,14 @@
     </script>
     
     <!-- Leaflet CSS & JS for OpenStreetMap -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha384-sHL9NAb7lN7rfvG5lfHpm643Xkcjzp4jFvuavGOndn6pjVqS6ny56CAt3nsEVT4H" crossorigin="anonymous"/>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH" crossorigin="anonymous"></script>
     
     <!-- Lucide Icons -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@latest"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu" crossorigin="anonymous"></script>
 
     <!-- html2canvas loaded with defer for non-blocking page load -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H" crossorigin="anonymous"></script>
 
     <!-- Unified Client-side Security Helper -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>

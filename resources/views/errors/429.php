@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>429 ส่งคำขอถี่เกินไป | ระบบแจ้งจัดเก็บขยะไร้บ้าน</title>
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com"></script>
+    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>body { font-family: 'Kanit', sans-serif; }</style>
 </head>

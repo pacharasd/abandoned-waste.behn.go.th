@@ -45,6 +45,7 @@ tags:
 - **Universal CSRF Protection:** ติดตั้ง `<meta name="csrf-token">` ใน Layout หลัก และโหลด `app-security.js` เพื่อแทรก Header `X-CSRF-TOKEN` ในทุกคำขอ `fetch()` หรือ AJAX โดยอัตโนมัติ
 - **Safe DOM / Leaflet Map Rendering:** หลีกเลี่ยงการต่อสตริง HTML สุ่มเสี่ยงใน Popups ของแผนที่ Leaflet โดยใช้ `AppSecurity.createSafePopup()` สร้าง DOM Element ผ่าน `textContent` ที่ปลอดภัยจาก XSS 100%
 - **Declarative Event Delegation (No Inline `onclick`):** ยกเลิกการใช้ Inline Event Handler ทุกจุดในโปรเจกต์ (`onclick="..."`) แล้วเปลี่ยนมาใช้ Event Delegation ใน `app-security.js` ผ่าน Data Attributes เช่น `data-modal-open`, `data-modal-close`, `data-dismiss="alert"`, และ `data-sidebar-open/close` เพื่อสอดรับกับนโยบาย CSP ที่เข้มงวด
+- **Subresource Integrity (SRI) Protection:** ตรึงเวอร์ชันและตรวจสอบความถูกต้องของสคริปต์/สไตล์ชีทภายนอกจาก CDN ทุกตัวด้วยค่าแฮช SHA-384 (`integrity="sha384-..."`) พร้อม `crossorigin="anonymous"` (Tailwind CSS, Leaflet, Lucide Icons, Chart.js, html2canvas) เพื่อป้องกันการถูกดัดแปลงไฟล์จากผู้ให้บริการ CDN หรือการโจมตี Supply Chain Attack
 
 ### 5. มาตรการระดับโครงสร้างพื้นฐาน (Server Hardening & Strict CSP)
 - **Strict Nonce-based Content-Security-Policy (`App\Core\CSP`):**
