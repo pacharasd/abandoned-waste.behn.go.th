@@ -304,7 +304,7 @@ try {
     $adminLayout = file_get_contents(BASE_PATH . '/resources/views/layouts/admin.php');
     $staffLayout = file_get_contents(BASE_PATH . '/resources/views/layouts/staff.php');
 
-    assertTest(strpos($citizenLayout, 'integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA"') !== false, "SRI: Tailwind CSS locked with SHA-384 integrity in citizen layout");
+    assertTest(file_exists(BASE_PATH . '/public/assets/css/tailwind.css') && strpos($citizenLayout, 'assets/css/tailwind.css') !== false, "Styles: Production compiled tailwind.css exists and is linked in citizen layout");
     assertTest(strpos($citizenLayout, 'integrity="sha384-cxOPjt7s7Iz04uaHJceBmS+qpjv2JkIHNVcuOrM+YHwZOmJGBXI00mdUXEq65HTH"') !== false, "SRI: Leaflet JS locked with SHA-384 integrity in citizen layout");
     assertTest(strpos($citizenLayout, 'integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu"') !== false, "SRI: Lucide Icons locked with SHA-384 integrity in citizen layout");
     assertTest(strpos($citizenLayout, 'integrity="sha384-ZZ1pncU3bQe8y31yfZdMFdSpttDoPmOZg2wguVK9almUodir1PghgT0eY7Mrty8H"') !== false, "SRI: html2canvas locked with SHA-384 integrity in citizen layout");

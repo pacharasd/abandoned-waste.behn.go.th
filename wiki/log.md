@@ -80,3 +80,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Removed `'unsafe-inline'` from `style-src` in `App\Core\CSP`, extracted all inline `<style>` and `style="..."` attributes into `public/assets/css/app-style.css`, and hooked dynamic style creation to inherit CSP nonces.
+
+---
+
+## [2026-09-02] feat | Production Pre-compiled Tailwind CSS
+- **Operation:** Elimination of runtime Tailwind Play CDN dependency in favor of static compiled CSS.
+- **Updated Pages:**
+  - `[[wiki/concepts/security-architecture]]`
+- **Key Synthesis:** Replaced `cdn.tailwindcss.com` dynamic script injection with static compiled `public/assets/css/tailwind.css` (53 KB minified). Eliminates FOUC and runtime CSP conflicts without requiring `'unsafe-inline'`.

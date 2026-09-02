@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>404 ไม่พบหน้า | ระบบแจ้งจัดเก็บขยะไร้บ้าน</title>
     <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?? '') ?>/assets/js/app-security.js"></script>
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl ?? '') ?>/assets/css/tailwind.css">
     <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl ?? '') ?>/assets/css/app-style.css">
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex items-center justify-center p-4">

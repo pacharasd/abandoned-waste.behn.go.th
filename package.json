@@ -6,7 +6,8 @@
   "scripts": {
     "status": "node tools/wiki_tools.js status",
     "lint": "node tools/wiki_tools.js lint",
-    "search": "node tools/wiki_tools.js search"
+    "search": "node tools/wiki_tools.js search",
+    "build:css": "tailwindcss -i ./resources/css/app.css -o ./public/assets/css/tailwind.css --minify"
   },
   "keywords": [
     "llm-wiki",
@@ -15,5 +16,8 @@
     "knowledge-base"
   ],
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
 }

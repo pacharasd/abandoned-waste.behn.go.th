@@ -13,29 +13,8 @@
     <!-- Unified Client-side Security Helper (Pre-attaches CSP nonces) -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/js/app-security.js"></script>
 
-    <!-- Tailwind CSS -->
-    <script <?= \App\Core\CSP::nonceAttr() ?> src="https://cdn.tailwindcss.com/3.4.16" integrity="sha384-mS5Uq7sE90lgbBDN8xgf34ibEgbZo4gB3tfLY40ZRle+M188BQw8onzNHg6GUZaA" crossorigin="anonymous"></script>
-    <script <?= \App\Core\CSP::nonceAttr() ?>>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        emerald: {
-                            50: '#ecfdf5',
-                            500: '#10b981',
-                            600: '#059669',
-                            700: '#047857',
-                            800: '#065f46',
-                            900: '#064e3b',
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Kanit', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Compiled Production Tailwind CSS (Zero Runtime, Zero CSP Violations) -->
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/css/tailwind.css">
     <!-- Lucide Icons -->
     <script <?= \App\Core\CSP::nonceAttr() ?> src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu" crossorigin="anonymous"></script>
 
