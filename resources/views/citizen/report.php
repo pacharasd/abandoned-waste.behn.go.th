@@ -786,7 +786,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     searchResultsDropdown.innerHTML = '<div class="p-4 text-xs text-slate-500 text-center">ไม่พบสถานที่ที่ระบุ กรุณาลองพิมพ์ชื่อซอยหรือถนนใกล้เคียง</div>';
                 }
-            }
         } catch (err) {
             console.warn('Geocoding error:', err);
             searchResultsDropdown.innerHTML = '<div class="p-4 text-xs text-rose-500 text-center">เกิดข้อผิดพลาดในการค้นหา</div>';
