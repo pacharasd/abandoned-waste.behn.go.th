@@ -231,8 +231,14 @@ $cutoffTimeSlots = [
                     <!-- Collection Date (Col 1) -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
-                        <input type="date" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>"
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        <div class="relative thai-datepicker-group" data-hidden-id="add_collection_date">
+                            <input type="hidden" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>">
+                            <button type="button" class="thai-datepicker-trigger w-full px-3.5 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl text-slate-900 text-sm flex items-center justify-between transition focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <span class="thai-datepicker-label font-medium text-slate-800"></span>
+                                <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+                            </button>
+                            <div class="thai-datepicker-popover absolute left-0 top-full mt-1.5 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 w-72 hidden select-none"></div>
+                        </div>
                         <div id="add_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
 
@@ -278,8 +284,14 @@ $cutoffTimeSlots = [
                         <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff)</label>
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                             <div class="sm:col-span-7">
-                                <input type="date" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>"
-                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                                <div class="relative thai-datepicker-group" data-hidden-id="add_cutoff_date_part">
+                                    <input type="hidden" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>">
+                                    <button type="button" class="thai-datepicker-trigger w-full px-3 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm flex items-center justify-between transition focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                        <span class="thai-datepicker-label font-medium text-slate-800 truncate"></span>
+                                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0"></i>
+                                    </button>
+                                    <div class="thai-datepicker-popover absolute left-0 sm:right-0 sm:left-auto top-full mt-1.5 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 w-72 hidden select-none"></div>
+                                </div>
                             </div>
                             <div class="sm:col-span-5">
                                 <select id="add_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
@@ -361,8 +373,14 @@ $cutoffTimeSlots = [
                     <!-- Collection Date (Col 1) -->
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
-                        <input type="date" name="collection_date" id="edit_collection_date" required
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                        <div class="relative thai-datepicker-group" data-hidden-id="edit_collection_date">
+                            <input type="hidden" name="collection_date" id="edit_collection_date" required>
+                            <button type="button" class="thai-datepicker-trigger w-full px-3.5 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl text-slate-900 text-sm flex items-center justify-between transition focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                <span class="thai-datepicker-label font-medium text-slate-800"></span>
+                                <i data-lucide="calendar" class="w-4 h-4 text-emerald-600 flex-shrink-0"></i>
+                            </button>
+                            <div class="thai-datepicker-popover absolute left-0 top-full mt-1.5 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 w-72 hidden select-none"></div>
+                        </div>
                         <div id="edit_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
 
@@ -409,8 +427,14 @@ $cutoffTimeSlots = [
                         <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff)</label>
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                             <div class="sm:col-span-7">
-                                <input type="date" id="edit_cutoff_date_part"
-                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
+                                <div class="relative thai-datepicker-group" data-hidden-id="edit_cutoff_date_part">
+                                    <input type="hidden" id="edit_cutoff_date_part">
+                                    <button type="button" class="thai-datepicker-trigger w-full px-3 py-2 bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm flex items-center justify-between transition focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                                        <span class="thai-datepicker-label font-medium text-slate-800 truncate"></span>
+                                        <i data-lucide="calendar" class="w-3.5 h-3.5 text-emerald-600 flex-shrink-0"></i>
+                                    </button>
+                                    <div class="thai-datepicker-popover absolute left-0 sm:right-0 sm:left-auto top-full mt-1.5 z-50 bg-white border border-slate-200 rounded-2xl shadow-xl p-3 w-72 hidden select-none"></div>
+                                </div>
                             </div>
                             <div class="sm:col-span-5">
                                 <select id="edit_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
@@ -560,6 +584,237 @@ function generateAutoTitle(dateVal, targetId) {
     }
 }
 
+/**
+ * High-performance, In-DOM Thai Date Picker
+ * Zero native Chromium popup, Zero dark-mode black flash, Instant 0ms response
+ */
+class ThaiCalendarPicker {
+    constructor(groupEl) {
+        this.group = groupEl;
+        this.hiddenInput = document.getElementById(groupEl.dataset.hiddenId);
+        this.triggerBtn = groupEl.querySelector('.thai-datepicker-trigger');
+        this.labelSpan = groupEl.querySelector('.thai-datepicker-label');
+        this.popover = groupEl.querySelector('.thai-datepicker-popover');
+        
+        const initialVal = this.hiddenInput ? this.hiddenInput.value : '';
+        const parsed = this.parseDate(initialVal);
+        this.viewYear = parsed.year;
+        this.viewMonth = parsed.month;
+        
+        this.updateLabel();
+        this.bindEvents();
+    }
+
+    parseDate(str) {
+        if (str && str.includes('-')) {
+            const p = str.split('-');
+            if (p.length === 3) {
+                const y = parseInt(p[0], 10);
+                const m = parseInt(p[1], 10);
+                const d = parseInt(p[2], 10);
+                if (!isNaN(y) && !isNaN(m) && !isNaN(d)) {
+                    return { year: y, month: m, day: d };
+                }
+            }
+        }
+        const now = new Date();
+        return { year: now.getFullYear(), month: now.getMonth() + 1, day: now.getDate() };
+    }
+
+    updateLabel() {
+        if (!this.labelSpan) return;
+        if (this.hiddenInput && this.hiddenInput.value) {
+            this.labelSpan.textContent = formatThaiDateDisplay(this.hiddenInput.value, false);
+        } else {
+            this.labelSpan.textContent = 'เลือกวันที่';
+        }
+    }
+
+    render() {
+        const thaiMonths = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+        const bYear = this.viewYear + 543;
+        const monthName = thaiMonths[this.viewMonth];
+        
+        const firstDayOfWeek = new Date(this.viewYear, this.viewMonth - 1, 1).getDay();
+        const daysInCurrentMonth = new Date(this.viewYear, this.viewMonth, 0).getDate();
+        const daysInPrevMonth = new Date(this.viewYear, this.viewMonth - 1, 0).getDate();
+        
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        
+        let daysHtml = '';
+        
+        // Prev month days
+        for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+            const d = daysInPrevMonth - i;
+            daysHtml += `<div class="py-1 text-xs text-slate-300 pointer-events-none text-center">${d}</div>`;
+        }
+        
+        // Current month days
+        for (let d = 1; d <= daysInCurrentMonth; d++) {
+            const dStr = `${this.viewYear}-${String(this.viewMonth).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+            const isSelected = this.hiddenInput && this.hiddenInput.value === dStr;
+            const isToday = dStr === todayStr;
+            
+            let cls = 'py-1.5 text-xs rounded-lg font-medium transition cursor-pointer text-center ';
+            if (isSelected) {
+                cls += 'bg-emerald-600 text-white font-bold shadow-sm shadow-emerald-600/30';
+            } else if (isToday) {
+                cls += 'ring-1 ring-emerald-500 text-emerald-700 font-bold hover:bg-emerald-50';
+            } else {
+                cls += 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800';
+            }
+            
+            daysHtml += `<button type="button" class="${cls}" data-date="${dStr}">${d}</button>`;
+        }
+        
+        // Next month padding
+        const totalCells = firstDayOfWeek + daysInCurrentMonth;
+        const remaining = (7 - (totalCells % 7)) % 7;
+        for (let d = 1; d <= remaining; d++) {
+            daysHtml += `<div class="py-1 text-xs text-slate-300 pointer-events-none text-center">${d}</div>`;
+        }
+
+        this.popover.innerHTML = `
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+                <button type="button" class="btn-prev-month p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนก่อนหน้า">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-xs font-bold text-slate-800 tracking-wide">${monthName} ${bYear}</div>
+                <button type="button" class="btn-next-month p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนถัดไป">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                <span class="text-[11px] font-semibold text-rose-500">อา</span>
+                <span class="text-[11px] font-semibold text-slate-400">จ</span>
+                <span class="text-[11px] font-semibold text-slate-400">อ</span>
+                <span class="text-[11px] font-semibold text-slate-400">พ</span>
+                <span class="text-[11px] font-semibold text-slate-400">พฤ</span>
+                <span class="text-[11px] font-semibold text-slate-400">ศ</span>
+                <span class="text-[11px] font-semibold text-slate-400">ส</span>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center">
+                ${daysHtml}
+            </div>
+            <div class="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 text-[11px]">
+                <button type="button" class="btn-picker-today text-emerald-600 hover:text-emerald-700 font-semibold px-2 py-1 rounded hover:bg-emerald-50 transition">วันนี้</button>
+                <button type="button" class="btn-picker-close text-slate-400 hover:text-slate-600 px-2 py-1 rounded hover:bg-slate-100 transition">ปิด</button>
+            </div>
+        `;
+        
+        this.popover.querySelector('.btn-prev-month').onclick = (e) => {
+            e.stopPropagation();
+            this.viewMonth--;
+            if (this.viewMonth < 1) {
+                this.viewMonth = 12;
+                this.viewYear--;
+            }
+            this.render();
+        };
+
+        this.popover.querySelector('.btn-next-month').onclick = (e) => {
+            e.stopPropagation();
+            this.viewMonth++;
+            if (this.viewMonth > 12) {
+                this.viewMonth = 1;
+                this.viewYear++;
+            }
+            this.render();
+        };
+
+        this.popover.querySelectorAll('button[data-date]').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                this.selectDate(btn.dataset.date);
+            };
+        });
+
+        this.popover.querySelector('.btn-picker-today').onclick = (e) => {
+            e.stopPropagation();
+            const t = new Date();
+            const tStr = `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+            this.selectDate(tStr);
+        };
+
+        this.popover.querySelector('.btn-picker-close').onclick = (e) => {
+            e.stopPropagation();
+            this.hide();
+        };
+    }
+
+    selectDate(dateStr) {
+        if (this.hiddenInput) {
+            this.hiddenInput.value = dateStr;
+            this.hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        const parsed = this.parseDate(dateStr);
+        this.viewYear = parsed.year;
+        this.viewMonth = parsed.month;
+        this.updateLabel();
+        this.hide();
+    }
+
+    show() {
+        document.querySelectorAll('.thai-datepicker-popover').forEach(p => p.classList.add('hidden'));
+        if (this.hiddenInput && this.hiddenInput.value) {
+            const p = this.parseDate(this.hiddenInput.value);
+            this.viewYear = p.year;
+            this.viewMonth = p.month;
+        }
+        this.render();
+        this.popover.classList.remove('hidden');
+    }
+
+    hide() {
+        this.popover.classList.add('hidden');
+    }
+
+    bindEvents() {
+        this.triggerBtn.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (this.popover.classList.contains('hidden')) {
+                this.show();
+            } else {
+                this.hide();
+            }
+        };
+
+        if (this.hiddenInput) {
+            this.hiddenInput.addEventListener('change', () => {
+                this.updateLabel();
+            });
+        }
+    }
+}
+
+function setDatePickerValue(inputId, val) {
+    const hidden = document.getElementById(inputId);
+    if (!hidden) return;
+    hidden.value = val || '';
+    const group = hidden.closest('.thai-datepicker-group');
+    if (group) {
+        const label = group.querySelector('.thai-datepicker-label');
+        if (label) {
+            label.textContent = val ? formatThaiDateDisplay(val, false) : 'เลือกวันที่';
+        }
+    }
+    hidden.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+// Global click to close datepickers
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.thai-datepicker-group')) {
+        document.querySelectorAll('.thai-datepicker-popover').forEach(p => p.classList.add('hidden'));
+    }
+});
+
+// Initialize all in-DOM date pickers
+document.querySelectorAll('.thai-datepicker-group').forEach(group => {
+    new ThaiCalendarPicker(group);
+});
+
 // Add Modal listeners
 const addCollDate = document.getElementById('add_collection_date');
 if (addCollDate) {
@@ -567,7 +822,7 @@ if (addCollDate) {
         updateCollectionPreview('add_collection_date', 'add_collection_preview');
         const cutoffDatePart = document.getElementById('add_cutoff_date_part');
         if (cutoffDatePart) {
-            cutoffDatePart.value = calcDateDaysBefore(this.value, 2);
+            setDatePickerValue('add_cutoff_date_part', calcDateDaysBefore(this.value, 2));
             syncCutoff('add_cutoff_date_part', 'add_cutoff_time_part', 'add_cutoff_date', 'add_cutoff_preview');
         }
         const titleInput = document.getElementById('add_title');
@@ -594,7 +849,7 @@ if (editCollDate) {
         updateCollectionPreview('edit_collection_date', 'edit_collection_preview');
         const cutoffDatePart = document.getElementById('edit_cutoff_date_part');
         if (cutoffDatePart && !cutoffDatePart.value) {
-            cutoffDatePart.value = calcDateDaysBefore(this.value, 2);
+            setDatePickerValue('edit_cutoff_date_part', calcDateDaysBefore(this.value, 2));
             syncCutoff('edit_cutoff_date_part', 'edit_cutoff_time_part', 'edit_cutoff_date', 'edit_cutoff_preview');
         }
     });
@@ -622,8 +877,7 @@ document.querySelectorAll('.btn-cutoff-preset').forEach(btn => {
         if (!baseVal) return;
         
         const newDate = calcDateDaysBefore(baseVal, days);
-        const dateEl = document.getElementById(dateTargetId);
-        if (dateEl) dateEl.value = newDate;
+        setDatePickerValue(dateTargetId, newDate);
         setSelectValue(timeTargetId, timeVal);
         syncCutoff(dateTargetId, timeTargetId, hiddenTargetId, previewId);
     });
@@ -652,7 +906,7 @@ function openEditModal(data) {
     document.getElementById('editScheduleForm').action = baseUrl + '/admin/schedules/' + data.id + '/update';
     
     document.getElementById('edit_title').value = data.title || '';
-    document.getElementById('edit_collection_date').value = data.collection_date || '';
+    setDatePickerValue('edit_collection_date', data.collection_date || '');
     
     const startTime = (data.start_time || '09:00:00').substring(0, 5);
     const endTime = (data.end_time || '16:00:00').substring(0, 5);
@@ -667,11 +921,11 @@ function openEditModal(data) {
         const parts = data.cutoff_date.replace('T', ' ').split(' ');
         const datePart = parts[0] || '';
         const timePart = (parts[1] || '18:00').substring(0, 5);
-        document.getElementById('edit_cutoff_date_part').value = datePart;
+        setDatePickerValue('edit_cutoff_date_part', datePart);
         setSelectValue('edit_cutoff_time_part', timePart);
     } else {
         const defaultCutoff = calcDateDaysBefore(data.collection_date, 2);
-        document.getElementById('edit_cutoff_date_part').value = defaultCutoff;
+        setDatePickerValue('edit_cutoff_date_part', defaultCutoff);
         setSelectValue('edit_cutoff_time_part', '18:00');
     }
 
