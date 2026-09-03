@@ -197,9 +197,10 @@ $cutoffTimeSlots = [
 
 <!-- Modal: Add New Schedule -->
 <div id="addScheduleModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden">
+        <!-- Fixed Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="calendar-plus" class="w-5 h-5 text-emerald-600"></i>
                 <span>สร้างรอบจัดเก็บขยะใหม่</span>
             </h3>
@@ -208,115 +209,120 @@ $cutoffTimeSlots = [
             </button>
         </div>
 
-        <form action="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/schedules" method="POST" class="space-y-4">
+        <form action="<?= htmlspecialchars($baseUrl ?: '') ?>/admin/schedules" method="POST" class="flex flex-col flex-1 overflow-hidden">
             <?= \App\Core\CSRF::field() ?>
 
-            <div>
-                <div class="flex items-center justify-between mb-1.5">
-                    <label class="block text-xs font-bold text-slate-700">ชื่อรอบการจัดเก็บ <span class="text-rose-500">*</span></label>
-                    <button type="button" id="btnAutoTitle" class="text-[11px] text-emerald-700 hover:text-emerald-800 font-semibold inline-flex items-center gap-1 hover:underline">
-                        <span>✨ ตั้งชื่อตามเดือนอัตโนมัติ</span>
-                    </button>
-                </div>
-                <input type="text" name="title" id="add_title" required placeholder="เช่น รอบจัดเก็บขยะชิ้นใหญ่ ประจำเดือนกันยายน 2569"
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-            </div>
+            <!-- Compact 2-Column Scrollable Body -->
+            <div class="p-5 sm:p-6 modal-body-scroll flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <!-- Title across 2 cols -->
+                    <div class="sm:col-span-2">
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="block text-xs font-bold text-slate-700">ชื่อรอบการจัดเก็บ <span class="text-rose-500">*</span></label>
+                            <button type="button" id="btnAutoTitle" class="text-[11px] text-emerald-700 hover:text-emerald-800 font-semibold inline-flex items-center gap-1 hover:underline">
+                                <span>✨ ตั้งชื่อตามเดือนอัตโนมัติ</span>
+                            </button>
+                        </div>
+                        <input type="text" name="title" id="add_title" required placeholder="เช่น รอบจัดเก็บขยะชิ้นใหญ่ ประจำเดือนกันยายน 2569"
+                               class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
-                    <input type="date" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>"
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-                    <div id="add_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">สถานะเริ่มต้น</label>
-                    <select name="status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                        <option value="upcoming">🔵 รอบถัดไป (Upcoming)</option>
-                        <option value="active" selected>🟢 เปิดรับเรื่อง (Active)</option>
-                        <option value="collecting">🟡 กำลังจัดเก็บ (Collecting)</option>
-                        <option value="completed">⚪ เสร็จสิ้น (Completed)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="space-y-1.5">
-                <div class="grid grid-cols-2 gap-4">
+                    <!-- Collection Date (Col 1) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาเริ่ม</label>
-                        <select name="start_time" id="add_start_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($timeSlots as $val => $label): ?>
-                                <option value="<?= $val ?>" <?= $val === '09:00' ? 'selected' : '' ?>><?= $label ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
+                        <input type="date" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>"
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        <div id="add_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
+
+                    <!-- Initial Status (Col 2) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาสิ้นสุด</label>
-                        <select name="end_time" id="add_end_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($timeSlots as $val => $label): ?>
-                                <option value="<?= $val ?>" <?= $val === '16:00' ? 'selected' : '' ?>><?= $label ?></option>
-                            <?php endforeach; ?>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">สถานะเริ่มต้น</label>
+                        <select name="status" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <option value="upcoming">🔵 รอบถัดไป (Upcoming)</option>
+                            <option value="active" selected>🟢 เปิดรับเรื่อง (Active)</option>
+                            <option value="collecting">🟡 กำลังจัดเก็บ (Collecting)</option>
+                            <option value="completed">⚪ เสร็จสิ้น (Completed)</option>
                         </select>
                     </div>
-                </div>
-                <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span class="text-[11px] text-slate-400">ช่วงเวลาด่วน:</span>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="09:00" data-end="16:00">09:00 - 16:00 น. (ปกติ)</button>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="08:30" data-end="12:00">ครึ่งวันเช้า</button>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="13:00" data-end="16:30">ครึ่งวันบ่าย</button>
-                </div>
-            </div>
 
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff Date)</label>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <div class="sm:col-span-7">
-                        <input type="date" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <!-- Collection Hours (Col 1) -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700">เวลาจัดเก็บ (เริ่ม - สิ้นสุด)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <select name="start_time" id="add_start_time" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($timeSlots as $val => $label): ?>
+                                        <option value="<?= $val ?>" <?= $val === '09:00' ? 'selected' : '' ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <select name="end_time" id="add_end_time" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($timeSlots as $val => $label): ?>
+                                        <option value="<?= $val ?>" <?= $val === '16:00' ? 'selected' : '' ?>><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 flex-wrap pt-0.5">
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="09:00" data-end="16:00">ปกติ 09:00-16:00</button>
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="08:30" data-end="12:00">ครึ่งวันเช้า</button>
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="add_start_time" data-end-target="add_end_time" data-start="13:00" data-end="16:30">ครึ่งวันบ่าย</button>
+                        </div>
                     </div>
-                    <div class="sm:col-span-5">
-                        <select id="add_cutoff_time_part" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
-                                <option value="<?= $cVal ?>" <?= $cVal === '18:00' ? 'selected' : '' ?>><?= $cLabel ?></option>
-                            <?php endforeach; ?>
-                        </select>
+
+                    <!-- Cutoff Date (Col 2) -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff)</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                            <div class="sm:col-span-7">
+                                <input type="date" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>"
+                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            </div>
+                            <div class="sm:col-span-5">
+                                <select id="add_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
+                                        <option value="<?= $cVal ?>" <?= $cVal === '18:00' ? 'selected' : '' ?>><?= $cLabel ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="cutoff_date" id="add_cutoff_date" value="<?= date('Y-m-d 18:00:00', strtotime('+5 days')) ?>">
+                        <div id="add_cutoff_preview" class="text-[11px] font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-2.5 py-1 rounded-lg">
+                            <span class="preview-text"></span>
+                        </div>
+                        <div class="flex items-center gap-1 flex-wrap pt-0.5">
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-emerald-100/80 hover:bg-emerald-200 text-emerald-900 rounded-md font-semibold transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="2" data-time="18:00" data-preview="add_cutoff_preview">⚡ ก่อน 2 วัน (18:00)</button>
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="1" data-time="18:00" data-preview="add_cutoff_preview">ก่อน 1 วัน</button>
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="3" data-time="18:00" data-preview="add_cutoff_preview">ก่อน 3 วัน</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Hidden input submitted to server -->
-                <input type="hidden" name="cutoff_date" id="add_cutoff_date" value="<?= date('Y-m-d 18:00:00', strtotime('+5 days')) ?>">
-                
-                <div id="add_cutoff_preview" class="text-xs font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                    <span class="preview-text"></span>
-                </div>
+                    <!-- Area Zone (Col 1) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">พื้นที่ / โซนให้บริการ</label>
+                        <input type="text" name="area_zone" value="ครอบคลุมทุกตำบล/ชุมชนในเขตเทศบาลนครนนทบุรี"
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
 
-                <div class="flex items-center gap-1.5 flex-wrap pt-1">
-                    <span class="text-[11px] text-slate-400">ทางลัดกำหนดปิดรับ:</span>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="2" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="1" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="3" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
+                    <!-- Description / Advice (Col 2) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">คำแนะนำประชาชน</label>
+                        <textarea name="description" rows="2" placeholder="เช่น การนำขยะมาวางหน้าบ้านก่อนเวลา 08:30 น."
+                                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
+                    </div>
+
                 </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">พื้นที่ / โซนให้บริการ</label>
-                <input type="text" name="area_zone" value="ครอบคลุมทุกตำบล/ชุมชนในเขตเทศบาลนครนนทบุรี"
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">รายละเอียด / คำแนะนำประชาชน</label>
-                <textarea name="description" rows="3" placeholder="ระบุคำแนะนำ เช่น การนำขยะมาวางหน้าบ้านก่อนเวลา 08:30 น."
-                          class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
-            </div>
-
-            <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button type="button" data-modal-close="addScheduleModal" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+            <!-- Fixed Footer -->
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 rounded-b-3xl">
+                <button type="button" data-modal-close="addScheduleModal" class="px-5 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl text-sm transition">
                     ยกเลิก
                 </button>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
+                <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
                     บันทึกรอบจัดเก็บ
                 </button>
             </div>
@@ -326,9 +332,10 @@ $cutoffTimeSlots = [
 
 <!-- Modal: Edit Schedule -->
 <div id="editScheduleModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
-            <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden">
+        <!-- Fixed Header -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
+            <h3 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="edit-3" class="w-5 h-5 text-emerald-600"></i>
                 <span>แก้ไขรอบจัดเก็บขยะ</span>
             </h3>
@@ -337,111 +344,116 @@ $cutoffTimeSlots = [
             </button>
         </div>
 
-        <form id="editScheduleForm" method="POST" class="space-y-4">
+        <form id="editScheduleForm" method="POST" class="flex flex-col flex-1 overflow-hidden">
             <?= \App\Core\CSRF::field() ?>
 
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">ชื่อรอบการจัดเก็บ <span class="text-rose-500">*</span></label>
-                <input type="text" name="title" id="edit_title" required
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-            </div>
+            <!-- Compact 2-Column Scrollable Body -->
+            <div class="p-5 sm:p-6 modal-body-scroll flex-1">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <!-- Title across 2 cols -->
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">ชื่อรอบการจัดเก็บ <span class="text-rose-500">*</span></label>
+                        <input type="text" name="title" id="edit_title" required
+                               class="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
-                    <input type="date" name="collection_date" id="edit_collection_date" required
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-                    <div id="edit_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">สถานะ</label>
-                    <select name="status" id="edit_status" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                        <option value="upcoming">🔵 รอบถัดไป (Upcoming)</option>
-                        <option value="active">🟢 เปิดรับเรื่อง (Active)</option>
-                        <option value="collecting">🟡 กำลังจัดเก็บ (Collecting)</option>
-                        <option value="completed">⚪ เสร็จสิ้น (Completed)</option>
-                        <option value="cancelled">🔴 ยกเลิก (Cancelled)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="space-y-1.5">
-                <div class="grid grid-cols-2 gap-4">
+                    <!-- Collection Date (Col 1) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาเริ่ม</label>
-                        <select name="start_time" id="edit_start_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($timeSlots as $val => $label): ?>
-                                <option value="<?= $val ?>"><?= $label ?></option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
+                        <input type="date" name="collection_date" id="edit_collection_date" required
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                        <div id="edit_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
+
+                    <!-- Status (Col 2) -->
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาสิ้นสุด</label>
-                        <select name="end_time" id="edit_end_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($timeSlots as $val => $label): ?>
-                                <option value="<?= $val ?>"><?= $label ?></option>
-                            <?php endforeach; ?>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">สถานะ</label>
+                        <select name="status" id="edit_status" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <option value="upcoming">🔵 รอบถัดไป (Upcoming)</option>
+                            <option value="active">🟢 เปิดรับเรื่อง (Active)</option>
+                            <option value="collecting">🟡 กำลังจัดเก็บ (Collecting)</option>
+                            <option value="completed">⚪ เสร็จสิ้น (Completed)</option>
+                            <option value="cancelled">🔴 ยกเลิก (Cancelled)</option>
                         </select>
                     </div>
-                </div>
-                <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
-                    <span class="text-[11px] text-slate-400">ช่วงเวลาด่วน:</span>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="09:00" data-end="16:00">09:00 - 16:00 น. (ปกติ)</button>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="08:30" data-end="12:00">ครึ่งวันเช้า</button>
-                    <button type="button" class="btn-time-preset text-[11px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="13:00" data-end="16:30">ครึ่งวันบ่าย</button>
-                </div>
-            </div>
 
-            <div class="space-y-1.5">
-                <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff Date)</label>
-                
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
-                    <div class="sm:col-span-7">
-                        <input type="date" id="edit_cutoff_date_part"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    <!-- Collection Hours (Col 1) -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700">เวลาจัดเก็บ (เริ่ม - สิ้นสุด)</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <select name="start_time" id="edit_start_time" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($timeSlots as $val => $label): ?>
+                                        <option value="<?= $val ?>"><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div>
+                                <select name="end_time" id="edit_end_time" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($timeSlots as $val => $label): ?>
+                                        <option value="<?= $val ?>"><?= $label ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-1 flex-wrap pt-0.5">
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="09:00" data-end="16:00">ปกติ 09:00-16:00</button>
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="08:30" data-end="12:00">ครึ่งวันเช้า</button>
+                            <button type="button" class="btn-time-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 text-slate-600 rounded-md transition" data-start-target="edit_start_time" data-end-target="edit_end_time" data-start="13:00" data-end="16:30">ครึ่งวันบ่าย</button>
+                        </div>
                     </div>
-                    <div class="sm:col-span-5">
-                        <select id="edit_cutoff_time_part" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
-                            <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
-                                <option value="<?= $cVal ?>"><?= $cLabel ?></option>
-                            <?php endforeach; ?>
-                        </select>
+
+                    <!-- Cutoff Date (Col 2) -->
+                    <div class="space-y-1">
+                        <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff)</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                            <div class="sm:col-span-7">
+                                <input type="date" id="edit_cutoff_date_part"
+                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                            </div>
+                            <div class="sm:col-span-5">
+                                <select id="edit_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                                    <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
+                                        <option value="<?= $cVal ?>"><?= $cLabel ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                        <input type="hidden" name="cutoff_date" id="edit_cutoff_date">
+                        <div id="edit_cutoff_preview" class="text-[11px] font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-2.5 py-1 rounded-lg">
+                            <span class="preview-text"></span>
+                        </div>
+                        <div class="flex items-center gap-1 flex-wrap pt-0.5">
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-emerald-100/80 hover:bg-emerald-200 text-emerald-900 rounded-md font-semibold transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="2" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ก่อน 2 วัน (18:00)</button>
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="1" data-time="18:00" data-preview="edit_cutoff_preview">ก่อน 1 วัน</button>
+                            <button type="button" class="btn-cutoff-preset text-[10px] px-2 py-0.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="3" data-time="18:00" data-preview="edit_cutoff_preview">ก่อน 3 วัน</button>
+                        </div>
                     </div>
-                </div>
 
-                <!-- Hidden input submitted to server -->
-                <input type="hidden" name="cutoff_date" id="edit_cutoff_date">
-                
-                <div id="edit_cutoff_preview" class="text-xs font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
-                    <span class="preview-text"></span>
-                </div>
+                    <!-- Area Zone (Col 1) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">พื้นที่ / โซนให้บริการ</label>
+                        <input type="text" name="area_zone" id="edit_area_zone"
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
 
-                <div class="flex items-center gap-1.5 flex-wrap pt-1">
-                    <span class="text-[11px] text-slate-400">ทางลัดกำหนดปิดรับ:</span>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="2" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="1" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="3" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
+                    <!-- Description / Advice (Col 2) -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">คำแนะนำประชาชน</label>
+                        <textarea name="description" id="edit_description" rows="2"
+                                  class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
+                    </div>
+
                 </div>
             </div>
 
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">พื้นที่ / โซนให้บริการ</label>
-                <input type="text" name="area_zone" id="edit_area_zone"
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
-            </div>
-
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">รายละเอียด / คำแนะนำประชาชน</label>
-                <textarea name="description" id="edit_description" rows="3"
-                          class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition"></textarea>
-            </div>
-
-            <div class="pt-4 flex items-center justify-end gap-3 border-t border-slate-100">
-                <button type="button" data-modal-close="editScheduleModal" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-sm transition">
+            <!-- Fixed Footer -->
+            <div class="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-3 rounded-b-3xl">
+                <button type="button" data-modal-close="editScheduleModal" class="px-5 py-2 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl text-sm transition">
                     ยกเลิก
                 </button>
-                <button type="submit" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
+                <button type="submit" class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm transition shadow-sm shadow-emerald-600/20">
                     บันทึกการแก้ไข
                 </button>
             </div>
