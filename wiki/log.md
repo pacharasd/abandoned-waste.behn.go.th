@@ -96,3 +96,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Pages:**
   - `[[wiki/concepts/security-architecture]]`
 - **Key Synthesis:** Whitelisted `https://nominatim.openstreetmap.org` in CSP `connect-src`, implemented server-side geocoding proxy (`/api/reverse-geocode`, `/api/search-places`) with valid User-Agent, session caching, and intelligent fallback for Nonthaburi municipality coordinates.
+
+---
+
+## [2026-09-03] refactor | Elimination of Native Chromium Datepicker Black Flash
+- **Operation:** Replaced native OS/Chromium `<input type="date">` with high-performance In-DOM Thai Calendar Picker.
+- **Updated Files:** `resources/views/admin/schedules/index.php`, `public/assets/css/app-style.css`, layouts.
+- **Key Synthesis:** Eliminated the 200ms black flash caused by Windows OS Dark Mode initializing Chromium's HWND surface before painting calendar cells. Built a lightweight, zero-dependency, pure in-DOM Thai calendar picker supporting Buddhist Era (2569) years, Thai month names, full keyboard/click accessibility, and seamless two-way binding with existing validation.
+
