@@ -125,6 +125,79 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     -webkit-backdrop-filter: none !important;
 }
 
+/* 7. Thai In-DOM Datepicker (Zero Black Flash, Guaranteed 7-Column Grid) */
+.thai-datepicker-popover {
+    width: 290px !important;
+    max-width: calc(100vw - 32px) !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 18px !important;
+    box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.16), 0 4px 10px -2px rgba(15, 23, 42, 0.08) !important;
+    padding: 12px !important;
+    z-index: 60 !important;
+}
+
+.thai-datepicker-grid {
+    display: grid !important;
+    grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    gap: 3px !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.thai-datepicker-grid .day-name {
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    padding: 4px 0 !important;
+    text-align: center !important;
+}
+
+.thai-datepicker-grid .day-name.sunday {
+    color: #e11d48 !important;
+}
+
+.thai-datepicker-grid .day-cell {
+    height: 34px !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+    border: none !important;
+    background: transparent;
+    color: #1e293b;
+    cursor: pointer;
+    transition: background-color 0.12s, color 0.12s;
+    user-select: none !important;
+}
+
+.thai-datepicker-grid .day-cell:hover {
+    background-color: #ecfdf5 !important;
+    color: #065f46 !important;
+}
+
+.thai-datepicker-grid .day-cell.selected {
+    background-color: #059669 !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35) !important;
+}
+
+.thai-datepicker-grid .day-cell.today {
+    border: 1.5px solid #059669 !important;
+    color: #047857 !important;
+    font-weight: 700 !important;
+}
+
+.thai-datepicker-grid .day-cell.muted {
+    color: #cbd5e1 !important;
+    pointer-events: none !important;
+    cursor: default !important;
+}
+
 /* Custom Leaflet Map Pin Markers */
 .map-marker-pin {
     width: 26px;

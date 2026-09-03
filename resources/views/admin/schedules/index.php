@@ -624,7 +624,10 @@ class ThaiCalendarPicker {
     updateLabel() {
         if (!this.labelSpan) return;
         if (this.hiddenInput && this.hiddenInput.value) {
-            this.labelSpan.textContent = formatThaiDateDisplay(this.hiddenInput.value, false);
+            const p = this.parseDate(this.hiddenInput.value);
+            const thaiMonths = ['', 'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+            const bYear = p.year + 543;
+            this.labelSpan.textContent = `${p.day} ${thaiMonths[p.month]} ${bYear}`;
         } else {
             this.labelSpan.textContent = 'เลือกวันที่';
         }
@@ -632,9 +635,18 @@ class ThaiCalendarPicker {
 
     render() {
         const thaiMonths = ['', 'มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
-        const bYear = this.viewYear + 543;
-        const monthName = thaiMonths[this.viewMonth];
         
+        let monthOptions = '';
+        for (let m = 1; m <= 12; m++) {
+            monthOptions += `<option value="${m}" ${m === this.viewMonth ? 'selected' : ''}>${thaiMonths[m]}</option>`;
+        }
+
+        let yearOptions = '';
+        const curYear = new Date().getFullYear();
+        for (let y = curYear - 1; y <= curYear + 4; y++) {
+            yearOptions += `<option value="${y}" ${y === this.viewYear ? 'selected' : ''}>${y + 543}</option>`;
+        }
+
         const firstDayOfWeek = new Date(this.viewYear, this.viewMonth - 1, 1).getDay();
         const daysInCurrentMonth = new Date(this.viewYear, this.viewMonth, 0).getDate();
         const daysInPrevMonth = new Date(this.viewYear, this.viewMonth - 1, 0).getDate();
@@ -647,7 +659,7 @@ class ThaiCalendarPicker {
         // Prev month days
         for (let i = firstDayOfWeek - 1; i >= 0; i--) {
             const d = daysInPrevMonth - i;
-            daysHtml += `<div class="py-1 text-xs text-slate-300 pointer-events-none text-center">${d}</div>`;
+            daysHtml += `<div class="day-cell muted">${d}</div>`;
         }
         
         // Current month days
@@ -656,13 +668,11 @@ class ThaiCalendarPicker {
             const isSelected = this.hiddenInput && this.hiddenInput.value === dStr;
             const isToday = dStr === todayStr;
             
-            let cls = 'py-1.5 text-xs rounded-lg font-medium transition cursor-pointer text-center ';
+            let cls = 'day-cell';
             if (isSelected) {
-                cls += 'bg-emerald-600 text-white font-bold shadow-sm shadow-emerald-600/30';
+                cls += ' selected';
             } else if (isToday) {
-                cls += 'ring-1 ring-emerald-500 text-emerald-700 font-bold hover:bg-emerald-50';
-            } else {
-                cls += 'text-slate-700 hover:bg-emerald-50 hover:text-emerald-800';
+                cls += ' today';
             }
             
             daysHtml += `<button type="button" class="${cls}" data-date="${dStr}">${d}</button>`;
@@ -672,37 +682,56 @@ class ThaiCalendarPicker {
         const totalCells = firstDayOfWeek + daysInCurrentMonth;
         const remaining = (7 - (totalCells % 7)) % 7;
         for (let d = 1; d <= remaining; d++) {
-            daysHtml += `<div class="py-1 text-xs text-slate-300 pointer-events-none text-center">${d}</div>`;
+            daysHtml += `<div class="day-cell muted">${d}</div>`;
         }
 
         this.popover.innerHTML = `
-            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
-                <button type="button" class="btn-prev-month p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนก่อนหน้า">
+            <div class="flex items-center justify-between pb-2.5 mb-2 border-b border-slate-100 gap-1">
+                <button type="button" class="btn-prev-month p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนก่อนหน้า">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <div class="text-xs font-bold text-slate-800 tracking-wide">${monthName} ${bYear}</div>
-                <button type="button" class="btn-next-month p-1 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนถัดไป">
+                <div class="flex items-center gap-1.5">
+                    <select class="picker-month-select text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg px-2 py-1 cursor-pointer focus:outline-none">
+                        ${monthOptions}
+                    </select>
+                    <select class="picker-year-select text-xs font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-lg px-2 py-1 cursor-pointer focus:outline-none">
+                        ${yearOptions}
+                    </select>
+                </div>
+                <button type="button" class="btn-next-month p-1.5 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition" title="เดือนถัดไป">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                 </button>
             </div>
-            <div class="grid grid-cols-7 gap-1 text-center mb-1">
-                <span class="text-[11px] font-semibold text-rose-500">อา</span>
-                <span class="text-[11px] font-semibold text-slate-400">จ</span>
-                <span class="text-[11px] font-semibold text-slate-400">อ</span>
-                <span class="text-[11px] font-semibold text-slate-400">พ</span>
-                <span class="text-[11px] font-semibold text-slate-400">พฤ</span>
-                <span class="text-[11px] font-semibold text-slate-400">ศ</span>
-                <span class="text-[11px] font-semibold text-slate-400">ส</span>
+            <div class="thai-datepicker-grid mb-1">
+                <div class="day-name sunday">อา</div>
+                <div class="day-name">จ</div>
+                <div class="day-name">อ</div>
+                <div class="day-name">พ</div>
+                <div class="day-name">พฤ</div>
+                <div class="day-name">ศ</div>
+                <div class="day-name">ส</div>
             </div>
-            <div class="grid grid-cols-7 gap-1 text-center">
+            <div class="thai-datepicker-grid">
                 ${daysHtml}
             </div>
-            <div class="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 text-[11px]">
-                <button type="button" class="btn-picker-today text-emerald-600 hover:text-emerald-700 font-semibold px-2 py-1 rounded hover:bg-emerald-50 transition">วันนี้</button>
-                <button type="button" class="btn-picker-close text-slate-400 hover:text-slate-600 px-2 py-1 rounded hover:bg-slate-100 transition">ปิด</button>
+            <div class="flex items-center justify-between pt-2 mt-2 border-t border-slate-100 text-xs">
+                <button type="button" class="btn-picker-today text-emerald-600 hover:text-emerald-700 font-bold px-2 py-1 rounded-md hover:bg-emerald-50 transition">⚡ วันนี้</button>
+                <button type="button" class="btn-picker-close text-slate-400 hover:text-slate-600 font-medium px-2 py-1 rounded-md hover:bg-slate-100 transition">ปิด</button>
             </div>
         `;
         
+        this.popover.querySelector('.picker-month-select').onchange = (e) => {
+            e.stopPropagation();
+            this.viewMonth = parseInt(e.target.value, 10);
+            this.render();
+        };
+
+        this.popover.querySelector('.picker-year-select').onchange = (e) => {
+            e.stopPropagation();
+            this.viewYear = parseInt(e.target.value, 10);
+            this.render();
+        };
+
         this.popover.querySelector('.btn-prev-month').onclick = (e) => {
             e.stopPropagation();
             this.viewMonth--;
