@@ -111,4 +111,12 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Files:** `app/Core/CSP.php`.
 - **Key Synthesis:** Added approved CDN domains (`https://cdn.jsdelivr.net`, `https://unpkg.com`, `https://cdnjs.cloudflare.com`) to `connect-src` directive in `App\Core\CSP` to allow DevTools source maps and library telemetry without triggering CSP violation errors in browser console.
 
+---
+
+## [2026-09-03] refactor | Clean UI: Remove Phone Icon from Report Detail
+- **Operation:** Removed decorative phone icon next to reporter phone in admin report details.
+- **Updated Files:** `resources/views/admin/reports/show.php`.
+- **Key Synthesis:** Simplified reporter contact display in admin report view to show clean monospace phone number without extraneous action icons.
+
+
 
