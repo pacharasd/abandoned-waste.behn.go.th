@@ -78,6 +78,53 @@ button, a {
     background-color: #94a3b8;
 }
 
+/* 6. Anti-Glitch & Native Picker Styling (Eliminates Black Flash in Chromium/Windows) */
+:root, html, body {
+    color-scheme: light;
+}
+
+input[type="date"],
+input[type="time"],
+input[type="datetime-local"],
+select {
+    color-scheme: light !important;
+}
+
+input[type="date"] {
+    accent-color: #059669 !important;
+    background-color: #f8fafc !important;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+input[type="date"]:focus {
+    background-color: #ffffff !important;
+}
+
+input[type="date"]::-webkit-datetime-edit,
+input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+    transition: none !important;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    opacity: 0.65;
+    padding: 2px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+}
+
+.modal-backdrop-solid {
+    background-color: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+
 /* Custom Leaflet Map Pin Markers */
 .map-marker-pin {
     width: 26px;

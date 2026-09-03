@@ -196,7 +196,7 @@ $cutoffTimeSlots = [
 ?>
 
 <!-- Modal: Add New Schedule -->
-<div id="addScheduleModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+<div id="addScheduleModal" class="fixed inset-0 z-50 modal-backdrop-solid flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden">
         <!-- Fixed Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
@@ -232,7 +232,7 @@ $cutoffTimeSlots = [
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
                         <input type="date" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>"
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
                         <div id="add_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
 
@@ -279,7 +279,7 @@ $cutoffTimeSlots = [
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                             <div class="sm:col-span-7">
                                 <input type="date" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>"
-                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
                             </div>
                             <div class="sm:col-span-5">
                                 <select id="add_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
@@ -331,7 +331,7 @@ $cutoffTimeSlots = [
 </div>
 
 <!-- Modal: Edit Schedule -->
-<div id="editScheduleModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+<div id="editScheduleModal" class="fixed inset-0 z-50 modal-backdrop-solid flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden">
         <!-- Fixed Header -->
         <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-white">
@@ -362,7 +362,7 @@ $cutoffTimeSlots = [
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
                         <input type="date" name="collection_date" id="edit_collection_date" required
-                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                               class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
                         <div id="edit_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                     </div>
 
@@ -410,7 +410,7 @@ $cutoffTimeSlots = [
                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
                             <div class="sm:col-span-7">
                                 <input type="date" id="edit_cutoff_date_part"
-                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                                       class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white">
                             </div>
                             <div class="sm:col-span-5">
                                 <select id="edit_cutoff_time_part" class="w-full px-2 py-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
