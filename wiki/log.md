@@ -104,3 +104,11 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Files:** `resources/views/admin/schedules/index.php`, `public/assets/css/app-style.css`, layouts.
 - **Key Synthesis:** Eliminated the 200ms black flash caused by Windows OS Dark Mode initializing Chromium's HWND surface before painting calendar cells. Built a lightweight, zero-dependency, pure in-DOM Thai calendar picker supporting Buddhist Era (2569) years, Thai month names, full keyboard/click accessibility, and seamless two-way binding with existing validation.
 
+---
+
+## [2026-09-03] fix | CSP connect-src Whitelist for Approved CDNs
+- **Operation:** Resolve DevTools console CSP violations when inspecting pages.
+- **Updated Files:** `app/Core/CSP.php`.
+- **Key Synthesis:** Added approved CDN domains (`https://cdn.jsdelivr.net`, `https://unpkg.com`, `https://cdnjs.cloudflare.com`) to `connect-src` directive in `App\Core\CSP` to allow DevTools source maps and library telemetry without triggering CSP violation errors in browser console.
+
+
