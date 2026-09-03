@@ -49,11 +49,8 @@
                     </div>
                     <div>
                         <div class="text-xs text-slate-400">เบอร์โทรศัพท์</div>
-                        <div class="font-mono text-slate-800 mt-1 font-bold flex items-center gap-2">
-                            <span><?= htmlspecialchars($report['reporter_phone']) ?></span>
-                            <a href="tel:<?= preg_replace('/[^0-9]/', '', $report['reporter_phone']) ?>" class="p-1 text-emerald-600 hover:bg-emerald-50 rounded">
-                                <i data-lucide="phone" class="w-3.5 h-3.5"></i>
-                            </a>
+                        <div class="font-mono text-slate-800 mt-1 font-bold">
+                            <?= htmlspecialchars($report['reporter_phone']) ?>
                         </div>
                     </div>
                     
