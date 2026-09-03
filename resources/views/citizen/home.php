@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="map-popup-addr">📍 ${AppSecurity.escapeHtml(pt.address)}</div>
                         <div class="map-popup-badge">สถานะ: ${AppSecurity.escapeHtml(pt.status)}</div>
                         <div class="map-popup-divider">
-                            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/track?search=${encodeURIComponent(pt.report_number)}" class="map-popup-link">ดูความคืบหน้า</a>
+                            <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/track?search=${encodeURIComponent(pt.report_number)}" class="map-popup-link text-white font-bold">ดูความคืบหน้า</a>
                         </div>
                     </div>
                 `;

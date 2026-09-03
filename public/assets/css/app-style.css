@@ -284,38 +284,58 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
     padding-top: 6px;
 }
 
-.map-popup-link {
-    display: block;
-    text-align: center;
-    padding: 5px 8px;
-    background: #059669;
-    color: white;
-    border-radius: 6px;
-    font-size: 11px;
-    text-decoration: none;
-    font-weight: 500;
-    transition: background 0.15s ease;
+.map-popup-link,
+.leaflet-popup-content a.map-popup-link,
+.leaflet-container a.map-popup-link {
+    display: block !important;
+    text-align: center !important;
+    padding: 6px 12px !important;
+    background: #059669 !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    transition: background 0.15s ease !important;
 }
 
-.map-popup-link:hover {
-    background: #047857;
+.map-popup-link:hover,
+.map-popup-link:focus,
+.map-popup-link:active,
+.map-popup-link:visited,
+.leaflet-popup-content a.map-popup-link:hover,
+.leaflet-popup-content a.map-popup-link:visited,
+.leaflet-container a.map-popup-link:hover,
+.leaflet-container a.map-popup-link:visited {
+    background: #047857 !important;
+    color: #ffffff !important;
 }
 
-.map-popup-link-dark {
-    display: block;
-    text-align: center;
-    padding: 5px 8px;
-    background: #0f172a;
-    color: white;
-    border-radius: 6px;
-    font-size: 11px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.15s ease;
+.map-popup-link-dark,
+.leaflet-popup-content a.map-popup-link-dark,
+.leaflet-container a.map-popup-link-dark {
+    display: block !important;
+    text-align: center !important;
+    padding: 6px 12px !important;
+    background: #0f172a !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    font-size: 11px !important;
+    text-decoration: none !important;
+    font-weight: 700 !important;
+    transition: background 0.15s ease !important;
 }
 
-.map-popup-link-dark:hover {
-    background: #1e293b;
+.map-popup-link-dark:hover,
+.map-popup-link-dark:focus,
+.map-popup-link-dark:active,
+.map-popup-link-dark:visited,
+.leaflet-popup-content a.map-popup-link-dark:hover,
+.leaflet-popup-content a.map-popup-link-dark:visited,
+.leaflet-container a.map-popup-link-dark:hover,
+.leaflet-container a.map-popup-link-dark:visited {
+    background: #1e293b !important;
+    color: #ffffff !important;
 }
 
 /* 5. Fluid Scrollbars */

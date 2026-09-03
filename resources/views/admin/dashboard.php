@@ -355,7 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class="map-popup-type">🏷️ ${AppSecurity.escapeHtml(pt.waste_type)}</div>
                     <div class="map-popup-addr">📍 ${AppSecurity.escapeHtml(pt.address)}</div>
                     <div class="map-popup-meta">👤 ผู้แจ้ง: ${AppSecurity.escapeHtml(pt.reporter_name)} (${AppSecurity.escapeHtml(pt.reporter_phone)})</div>
-                    <a href="${AppSecurity.escapeHtml(pt.detail_url)}" class="map-popup-link-dark">
+                    <a href="${AppSecurity.escapeHtml(pt.detail_url)}" class="map-popup-link-dark text-white font-bold">
                         เปิดดูและจัดการรายการ
                     </a>
                 </div>
