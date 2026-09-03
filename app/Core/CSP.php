@@ -39,7 +39,7 @@ class CSP {
             . "style-src 'self' 'nonce-{$nonce}' https://fonts.googleapis.com https://unpkg.com; "
             . "font-src 'self' https://fonts.gstatic.com data:; "
             . "img-src 'self' data: blob: https://*.tile.openstreetmap.org https://unpkg.com; "
-            . "connect-src 'self' https://nominatim.openstreetmap.org; "
+            . "connect-src 'self' https://nominatim.openstreetmap.org https://cdn.jsdelivr.net https://unpkg.com https://cdnjs.cloudflare.com; "
             . "object-src 'none'; "
             . "base-uri 'self'; "
             . "frame-ancestors 'self';";
