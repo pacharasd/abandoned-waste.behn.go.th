@@ -150,6 +150,51 @@
 
 </div>
 
+<?php
+$timeSlots = [
+    '06:00' => '06:00 น.',
+    '06:30' => '06:30 น.',
+    '07:00' => '07:00 น.',
+    '07:30' => '07:30 น.',
+    '08:00' => '08:00 น.',
+    '08:30' => '08:30 น.',
+    '09:00' => '09:00 น.',
+    '09:30' => '09:30 น.',
+    '10:00' => '10:00 น.',
+    '10:30' => '10:30 น.',
+    '11:00' => '11:00 น.',
+    '11:30' => '11:30 น.',
+    '12:00' => '12:00 น.',
+    '12:30' => '12:30 น.',
+    '13:00' => '13:00 น.',
+    '13:30' => '13:30 น.',
+    '14:00' => '14:00 น.',
+    '14:30' => '14:30 น.',
+    '15:00' => '15:00 น.',
+    '15:30' => '15:30 น.',
+    '16:00' => '16:00 น.',
+    '16:30' => '16:30 น.',
+    '17:00' => '17:00 น.',
+    '17:30' => '17:30 น.',
+    '18:00' => '18:00 น.',
+    '18:30' => '18:30 น.',
+    '19:00' => '19:00 น.',
+    '20:00' => '20:00 น.',
+];
+
+$cutoffTimeSlots = [
+    '18:00' => '18:00 น. (สิ้นสุดเวลาทำการ - แนะนำ)',
+    '16:30' => '16:30 น. (สิ้นสุดเวลาราชการ)',
+    '12:00' => '12:00 น. (เที่ยงวัน)',
+    '23:59' => '23:59 น. (สิ้นวัน)',
+    '08:30' => '08:30 น. (ช่วงเช้า)',
+    '09:00' => '09:00 น.',
+    '10:00' => '10:00 น.',
+    '15:00' => '15:00 น.',
+    '20:00' => '20:00 น.',
+];
+?>
+
 <!-- Modal: Add New Schedule -->
 <div id="addScheduleModal" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
@@ -181,7 +226,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
                     <input type="date" name="collection_date" id="add_collection_date" required value="<?= date('Y-m-d', strtotime('+7 days')) ?>"
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                     <div id="add_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                 </div>
 
@@ -200,13 +245,19 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาเริ่ม</label>
-                        <input type="time" name="start_time" id="add_start_time" value="09:00"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                        <select name="start_time" id="add_start_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($timeSlots as $val => $label): ?>
+                                <option value="<?= $val ?>" <?= $val === '09:00' ? 'selected' : '' ?>><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาสิ้นสุด</label>
-                        <input type="time" name="end_time" id="add_end_time" value="16:00"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                        <select name="end_time" id="add_end_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($timeSlots as $val => $label): ?>
+                                <option value="<?= $val ?>" <?= $val === '16:00' ? 'selected' : '' ?>><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
@@ -219,8 +270,23 @@
 
             <div class="space-y-1.5">
                 <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff Date)</label>
-                <input type="datetime-local" name="cutoff_date" id="add_cutoff_date" value="<?= date('Y-m-d\T18:00', strtotime('+5 days')) ?>"
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                    <div class="sm:col-span-7">
+                        <input type="date" id="add_cutoff_date_part" value="<?= date('Y-m-d', strtotime('+5 days')) ?>"
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
+                    <div class="sm:col-span-5">
+                        <select id="add_cutoff_time_part" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
+                                <option value="<?= $cVal ?>" <?= $cVal === '18:00' ? 'selected' : '' ?>><?= $cLabel ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Hidden input submitted to server -->
+                <input type="hidden" name="cutoff_date" id="add_cutoff_date" value="<?= date('Y-m-d 18:00:00', strtotime('+5 days')) ?>">
                 
                 <div id="add_cutoff_preview" class="text-xs font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                     <span class="preview-text"></span>
@@ -228,9 +294,9 @@
 
                 <div class="flex items-center gap-1.5 flex-wrap pt-1">
                     <span class="text-[11px] text-slate-400">ทางลัดกำหนดปิดรับ:</span>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-target="add_cutoff_date" data-base="add_collection_date" data-days="2" data-preview="add_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-target="add_cutoff_date" data-base="add_collection_date" data-days="1" data-preview="add_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-target="add_cutoff_date" data-base="add_collection_date" data-days="3" data-preview="add_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="2" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="1" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="add_cutoff_date_part" data-time-target="add_cutoff_time_part" data-hidden-target="add_cutoff_date" data-base="add_collection_date" data-days="3" data-time="18:00" data-preview="add_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
                 </div>
             </div>
 
@@ -284,7 +350,7 @@
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">วันที่จัดเก็บ <span class="text-rose-500">*</span></label>
                     <input type="date" name="collection_date" id="edit_collection_date" required
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
                     <div id="edit_collection_preview" class="text-[11px] text-emerald-700 mt-1 font-medium"></div>
                 </div>
 
@@ -304,13 +370,19 @@
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาเริ่ม</label>
-                        <input type="time" name="start_time" id="edit_start_time"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                        <select name="start_time" id="edit_start_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($timeSlots as $val => $label): ?>
+                                <option value="<?= $val ?>"><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1.5">เวลาสิ้นสุด</label>
-                        <input type="time" name="end_time" id="edit_end_time"
-                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                        <select name="end_time" id="edit_end_time" class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($timeSlots as $val => $label): ?>
+                                <option value="<?= $val ?>"><?= $label ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div class="flex items-center gap-1.5 flex-wrap pt-0.5">
@@ -323,8 +395,23 @@
 
             <div class="space-y-1.5">
                 <label class="block text-xs font-bold text-slate-700">วัน-เวลาปิดรับแจ้งล่วงหน้า (Cutoff Date)</label>
-                <input type="datetime-local" name="cutoff_date" id="edit_cutoff_date"
-                       class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                    <div class="sm:col-span-7">
+                        <input type="date" id="edit_cutoff_date_part"
+                               class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition">
+                    </div>
+                    <div class="sm:col-span-5">
+                        <select id="edit_cutoff_time_part" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition cursor-pointer">
+                            <?php foreach ($cutoffTimeSlots as $cVal => $cLabel): ?>
+                                <option value="<?= $cVal ?>"><?= $cLabel ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Hidden input submitted to server -->
+                <input type="hidden" name="cutoff_date" id="edit_cutoff_date">
                 
                 <div id="edit_cutoff_preview" class="text-xs font-medium text-emerald-800 bg-emerald-50/80 border border-emerald-200/80 px-3 py-1.5 rounded-lg flex items-center gap-1.5">
                     <span class="preview-text"></span>
@@ -332,9 +419,9 @@
 
                 <div class="flex items-center gap-1.5 flex-wrap pt-1">
                     <span class="text-[11px] text-slate-400">ทางลัดกำหนดปิดรับ:</span>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-target="edit_cutoff_date" data-base="edit_collection_date" data-days="2" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-target="edit_cutoff_date" data-base="edit_collection_date" data-days="1" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
-                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-target="edit_cutoff_date" data-base="edit_collection_date" data-days="3" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2.5 py-1 bg-emerald-100/70 hover:bg-emerald-200 text-emerald-900 rounded-lg font-semibold transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="2" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 2 วัน (18:00 น.) [แนะนำ]</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="1" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 1 วัน</button>
+                    <button type="button" class="btn-cutoff-preset text-[11px] px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition" data-date-target="edit_cutoff_date_part" data-time-target="edit_cutoff_time_part" data-hidden-target="edit_cutoff_date" data-base="edit_collection_date" data-days="3" data-time="18:00" data-preview="edit_cutoff_preview">⚡ ปิดก่อน 3 วัน</button>
                 </div>
             </div>
 
@@ -368,7 +455,7 @@ const thaiDayNames = ['วันอาทิตย์', 'วันจันท�
 
 function formatThaiDateDisplay(dateStr, withTime = false) {
     if (!dateStr) return '';
-    const d = new Date(dateStr);
+    const d = new Date(dateStr.replace(' ', 'T'));
     if (isNaN(d.getTime())) return '';
     const day = d.getDate();
     const dayName = thaiDayNames[d.getDay()];
@@ -380,20 +467,6 @@ function formatThaiDateDisplay(dateStr, withTime = false) {
         return `${dayName}ที่ ${day} ${month} ${year} เวลา ${hours}:${mins} น.`;
     }
     return `${dayName}ที่ ${day} ${month} ${year}`;
-}
-
-function updateCutoffPreview(inputId, previewId) {
-    const input = document.getElementById(inputId);
-    const preview = document.getElementById(previewId);
-    if (!input || !preview) return;
-    const val = input.value;
-    const textEl = preview.querySelector('.preview-text') || preview;
-    if (val) {
-        textEl.textContent = 'กำหนดปิดรับ: ' + formatThaiDateDisplay(val, true);
-        preview.classList.remove('hidden');
-    } else {
-        textEl.textContent = 'ยังไม่ได้กำหนดวันปิดรับแจ้งล่วงหน้า';
-    }
 }
 
 function updateCollectionPreview(inputId, previewId) {
@@ -408,7 +481,7 @@ function updateCollectionPreview(inputId, previewId) {
     }
 }
 
-function calcAutoCutoff(collectionDateVal, daysBefore = 2, timeStr = '18:00') {
+function calcDateDaysBefore(collectionDateVal, daysBefore = 2) {
     if (!collectionDateVal) return '';
     const parts = collectionDateVal.split('-');
     if (parts.length !== 3) return '';
@@ -417,7 +490,49 @@ function calcAutoCutoff(collectionDateVal, daysBefore = 2, timeStr = '18:00') {
     const year = d.getFullYear();
     const month = String(d.getMonth() + 1).padStart(2, '0');
     const day = String(d.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}T${timeStr}`;
+    return `${year}-${month}-${day}`;
+}
+
+function syncCutoff(dateTargetId, timeTargetId, hiddenTargetId, previewId) {
+    const dateEl = document.getElementById(dateTargetId);
+    const timeEl = document.getElementById(timeTargetId);
+    const hiddenEl = document.getElementById(hiddenTargetId);
+    const previewEl = document.getElementById(previewId);
+    if (!dateEl || !timeEl || !hiddenEl) return;
+
+    const dateVal = dateEl.value;
+    const timeVal = timeEl.value || '18:00';
+    if (dateVal) {
+        hiddenEl.value = `${dateVal} ${timeVal}:00`;
+        if (previewEl) {
+            const textEl = previewEl.querySelector('.preview-text') || previewEl;
+            textEl.textContent = 'กำหนดปิดรับ: ' + formatThaiDateDisplay(`${dateVal}T${timeVal}`, true);
+            previewEl.classList.remove('hidden');
+        }
+    } else {
+        hiddenEl.value = '';
+        if (previewEl) {
+            const textEl = previewEl.querySelector('.preview-text') || previewEl;
+            textEl.textContent = 'ยังไม่ได้กำหนดวันปิดรับแจ้งล่วงหน้า';
+        }
+    }
+}
+
+function setSelectValue(selectId, val) {
+    const el = document.getElementById(selectId);
+    if (!el) return;
+    let found = false;
+    for (let i = 0; i < el.options.length; i++) {
+        if (el.options[i].value === val) {
+            el.selectedIndex = i;
+            found = true;
+            break;
+        }
+    }
+    if (!found && val) {
+        const newOpt = new Option(val + ' น.', val, true, true);
+        el.add(newOpt);
+    }
 }
 
 function generateAutoTitle(dateVal, targetId) {
@@ -433,83 +548,83 @@ function generateAutoTitle(dateVal, targetId) {
     }
 }
 
-// Click anywhere on date/time inputs to trigger native picker popup
-document.querySelectorAll('input[type="date"], input[type="time"], input[type="datetime-local"]').forEach(input => {
-    input.addEventListener('click', function() {
-        if (typeof this.showPicker === 'function') {
-            try { this.showPicker(); } catch (e) {}
-        }
-    });
-});
-
-// Auto-sync in Add modal
+// Add Modal listeners
 const addCollDate = document.getElementById('add_collection_date');
 if (addCollDate) {
     addCollDate.addEventListener('change', function() {
         updateCollectionPreview('add_collection_date', 'add_collection_preview');
-        const cutoff = document.getElementById('add_cutoff_date');
-        if (cutoff) {
-            cutoff.value = calcAutoCutoff(this.value, 2, '18:00');
-            updateCutoffPreview('add_cutoff_date', 'add_cutoff_preview');
+        const cutoffDatePart = document.getElementById('add_cutoff_date_part');
+        if (cutoffDatePart) {
+            cutoffDatePart.value = calcDateDaysBefore(this.value, 2);
+            syncCutoff('add_cutoff_date_part', 'add_cutoff_time_part', 'add_cutoff_date', 'add_cutoff_preview');
         }
         const titleInput = document.getElementById('add_title');
         if (titleInput && !titleInput.value.trim()) {
             generateAutoTitle(this.value, 'add_title');
         }
     });
-    // Run initial previews
+    // Initial run
     updateCollectionPreview('add_collection_date', 'add_collection_preview');
-    updateCutoffPreview('add_cutoff_date', 'add_cutoff_preview');
+    syncCutoff('add_cutoff_date_part', 'add_cutoff_time_part', 'add_cutoff_date', 'add_cutoff_preview');
 }
 
-// Auto-sync in Edit modal
+document.getElementById('add_cutoff_date_part')?.addEventListener('change', function() {
+    syncCutoff('add_cutoff_date_part', 'add_cutoff_time_part', 'add_cutoff_date', 'add_cutoff_preview');
+});
+document.getElementById('add_cutoff_time_part')?.addEventListener('change', function() {
+    syncCutoff('add_cutoff_date_part', 'add_cutoff_time_part', 'add_cutoff_date', 'add_cutoff_preview');
+});
+
+// Edit Modal listeners
 const editCollDate = document.getElementById('edit_collection_date');
 if (editCollDate) {
     editCollDate.addEventListener('change', function() {
         updateCollectionPreview('edit_collection_date', 'edit_collection_preview');
-        const cutoff = document.getElementById('edit_cutoff_date');
-        if (cutoff && !cutoff.value) {
-            cutoff.value = calcAutoCutoff(this.value, 2, '18:00');
-            updateCutoffPreview('edit_cutoff_date', 'edit_cutoff_preview');
+        const cutoffDatePart = document.getElementById('edit_cutoff_date_part');
+        if (cutoffDatePart && !cutoffDatePart.value) {
+            cutoffDatePart.value = calcDateDaysBefore(this.value, 2);
+            syncCutoff('edit_cutoff_date_part', 'edit_cutoff_time_part', 'edit_cutoff_date', 'edit_cutoff_preview');
         }
     });
 }
 
-// Cutoff input change triggers preview update
-document.getElementById('add_cutoff_date')?.addEventListener('input', function() {
-    updateCutoffPreview('add_cutoff_date', 'add_cutoff_preview');
+document.getElementById('edit_cutoff_date_part')?.addEventListener('change', function() {
+    syncCutoff('edit_cutoff_date_part', 'edit_cutoff_time_part', 'edit_cutoff_date', 'edit_cutoff_preview');
 });
-document.getElementById('edit_cutoff_date')?.addEventListener('input', function() {
-    updateCutoffPreview('edit_cutoff_date', 'edit_cutoff_preview');
+document.getElementById('edit_cutoff_time_part')?.addEventListener('change', function() {
+    syncCutoff('edit_cutoff_date_part', 'edit_cutoff_time_part', 'edit_cutoff_date', 'edit_cutoff_preview');
 });
 
-// Presets for cutoff date
+// Cutoff Presets
 document.querySelectorAll('.btn-cutoff-preset').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
-        const targetId = this.dataset.target;
+        const dateTargetId = this.dataset.dateTarget;
+        const timeTargetId = this.dataset.timeTarget;
+        const hiddenTargetId = this.dataset.hiddenTarget;
         const baseId = this.dataset.base;
         const days = this.dataset.days || 2;
+        const timeVal = this.dataset.time || '18:00';
         const previewId = this.dataset.preview;
         const baseVal = document.getElementById(baseId)?.value;
         if (!baseVal) return;
-        const newCutoff = calcAutoCutoff(baseVal, days, '18:00');
-        const targetEl = document.getElementById(targetId);
-        if (targetEl) {
-            targetEl.value = newCutoff;
-            updateCutoffPreview(targetId, previewId);
-        }
+        
+        const newDate = calcDateDaysBefore(baseVal, days);
+        const dateEl = document.getElementById(dateTargetId);
+        if (dateEl) dateEl.value = newDate;
+        setSelectValue(timeTargetId, timeVal);
+        syncCutoff(dateTargetId, timeTargetId, hiddenTargetId, previewId);
     });
 });
 
-// Presets for time
+// Time Presets
 document.querySelectorAll('.btn-time-preset').forEach(btn => {
     btn.addEventListener('click', function(e) {
         e.preventDefault();
-        const startTarget = document.getElementById(this.dataset.startTarget);
-        const endTarget = document.getElementById(this.dataset.endTarget);
-        if (startTarget && this.dataset.start) startTarget.value = this.dataset.start;
-        if (endTarget && this.dataset.end) endTarget.value = this.dataset.end;
+        const startTarget = this.dataset.startTarget;
+        const endTarget = this.dataset.endTarget;
+        if (this.dataset.start) setSelectValue(startTarget, this.dataset.start);
+        if (this.dataset.end) setSelectValue(endTarget, this.dataset.end);
     });
 });
 
@@ -526,21 +641,30 @@ function openEditModal(data) {
     
     document.getElementById('edit_title').value = data.title || '';
     document.getElementById('edit_collection_date').value = data.collection_date || '';
-    document.getElementById('edit_start_time').value = (data.start_time || '09:00:00').substring(0, 5);
-    document.getElementById('edit_end_time').value = (data.end_time || '16:00:00').substring(0, 5);
+    
+    const startTime = (data.start_time || '09:00:00').substring(0, 5);
+    const endTime = (data.end_time || '16:00:00').substring(0, 5);
+    setSelectValue('edit_start_time', startTime);
+    setSelectValue('edit_end_time', endTime);
+
     document.getElementById('edit_area_zone').value = data.area_zone || '';
     document.getElementById('edit_description').value = data.description || '';
     document.getElementById('edit_status').value = data.status || 'upcoming';
     
     if (data.cutoff_date) {
-        const isoStr = data.cutoff_date.replace(' ', 'T').substring(0, 16);
-        document.getElementById('edit_cutoff_date').value = isoStr;
+        const parts = data.cutoff_date.replace('T', ' ').split(' ');
+        const datePart = parts[0] || '';
+        const timePart = (parts[1] || '18:00').substring(0, 5);
+        document.getElementById('edit_cutoff_date_part').value = datePart;
+        setSelectValue('edit_cutoff_time_part', timePart);
     } else {
-        document.getElementById('edit_cutoff_date').value = calcAutoCutoff(data.collection_date, 2, '18:00');
+        const defaultCutoff = calcDateDaysBefore(data.collection_date, 2);
+        document.getElementById('edit_cutoff_date_part').value = defaultCutoff;
+        setSelectValue('edit_cutoff_time_part', '18:00');
     }
 
     updateCollectionPreview('edit_collection_date', 'edit_collection_preview');
-    updateCutoffPreview('edit_cutoff_date', 'edit_cutoff_preview');
+    syncCutoff('edit_cutoff_date_part', 'edit_cutoff_time_part', 'edit_cutoff_date', 'edit_cutoff_preview');
 
     document.getElementById('editScheduleModal').classList.remove('hidden');
 }
