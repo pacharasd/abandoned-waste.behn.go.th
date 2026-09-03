@@ -118,5 +118,13 @@ This is an append-only, chronological audit log tracking all major LLM Wiki oper
 - **Updated Files:** `resources/views/admin/reports/show.php`.
 - **Key Synthesis:** Simplified reporter contact display in admin report view to show clean monospace phone number without extraneous action icons.
 
+---
+
+## [2026-09-03] fix | Map Popup Button Typography & High Specificity White Text
+- **Operation:** Enforced high-contrast white text (`#ffffff !important`) on map popup action buttons.
+- **Updated Files:** `public/assets/css/app-style.css`, `resources/views/citizen/home.php`, `resources/views/admin/dashboard.php`.
+- **Key Synthesis:** Overrode Leaflet's default link stylesheet (`.leaflet-container a`) which was tinting action button text dark blue/green on top of green background. Added high-specificity CSS rules covering hover, visited, and active states.
+
+
 
 
