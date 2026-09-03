@@ -105,13 +105,6 @@
                                 💡 <strong>คำแนะนำรอบนี้:</strong> <?= htmlspecialchars($nextSchedule['description']) ?>
                             </p>
                         <?php endif; ?>
-
-                        <div class="pt-1 flex items-center gap-2 flex-wrap">
-                            <button type="button" data-modal-open="scheduleOrphanPosterModal" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 text-xs font-bold transition">
-                                <i data-lucide="image" class="w-4 h-4 text-teal-600"></i>
-                                <span>ดูรายการประเภทขยะกำพร้าที่รับตามประกาศ</span>
-                            </button>
-                        </div>
                     </div>
 
                     <!-- Right: Countdown Widget & Action CTA -->
@@ -153,6 +146,29 @@
                     </div>
 
                 </div>
+            </div>
+        </div>
+    <?php else: ?>
+        <!-- Graceful Fallback Card when No Next Schedule is Currently Active -->
+        <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-2xl shadow-slate-900/10 border border-slate-200/80 text-center space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                <i data-lucide="calendar-clock" class="w-8 h-8 text-emerald-600"></i>
+            </div>
+            <div class="space-y-2 max-w-lg mx-auto">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-800 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-wider">
+                    <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span>อยู่ในระหว่างวางแผนรอบใหม่</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-bold text-slate-900 pt-1">ขณะนี้ยังไม่มีรอบการจัดเก็บขยะชิ้นใหญ่ที่เปิดรับเรื่อง</h3>
+                <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                    เทศบาลนครนนทบุรีกำลังจัดทำแผนเส้นทางและกำหนดการรอบถัดไป ทั้งนี้ท่านยังคงสามารถแจ้งจัดเก็บขยะไร้บ้านหรือขยะชิ้นใหญ่ในระบบไว้ล่วงหน้าได้ตลอด 24 ชั่วโมง
+                </p>
+            </div>
+            <div class="pt-2 flex items-center justify-center">
+                <a href="<?= htmlspecialchars($baseUrl ?: '') ?>/report" class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-900/15 transition hover:scale-[1.02]">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
+                    <span>แจ้งจัดเก็บขยะล่วงหน้า</span>
+                </a>
             </div>
         </div>
     <?php endif; ?>
@@ -237,9 +253,14 @@
                     </div>
                 <?php endforeach; ?>
             <?php else: ?>
-                <div class="col-span-3 bg-white rounded-3xl p-12 text-center text-slate-500 border border-slate-200">
-                    <i data-lucide="calendar-x" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
-                    <p>ยังไม่มีข้อมูลรอบการจัดเก็บในระบบ</p>
+                <div class="col-span-1 md:col-span-2 lg:col-span-3 bg-white rounded-3xl p-12 text-center text-slate-500 border border-slate-200/80 shadow-xs space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center mx-auto border border-slate-100">
+                        <i data-lucide="calendar-x" class="w-7 h-7 text-slate-400"></i>
+                    </div>
+                    <div class="space-y-1 max-w-md mx-auto">
+                        <h4 class="font-bold text-slate-800 text-base">ยังไม่มีประวัติรอบการจัดเก็บในระบบ</h4>
+                        <p class="text-xs text-slate-400">เจ้าหน้าที่จะอัปเดตตารางรอบการจัดเก็บประจำปีและลงพื้นที่ให้บริการเร็วๆ นี้</p>
+                    </div>
                 </div>
             <?php endif; ?>
         </div>
@@ -325,35 +346,6 @@ document.addEventListener('DOMContentLoaded', function() {
     setInterval(updateCountdown, 1000);
 });
 </script>
-
-<!-- Modal: Poster Infographic for Schedule -->
-<div id="scheduleOrphanPosterModal" class="modal-backdrop-auto fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 hidden">
-    <div class="bg-white rounded-3xl max-w-md w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl animate-in fade-in zoom-in duration-200">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between bg-slate-50">
-            <div class="flex items-center gap-2">
-                <div class="w-7 h-7 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center">
-                    <i data-lucide="image" class="w-4 h-4"></i>
-                </div>
-                <div>
-                    <h4 class="font-bold text-slate-900 text-sm">โปสเตอร์ขยะกำพร้า เทศบาลนครนนทบุรี</h4>
-                    <span class="text-[10px] text-slate-500">ขยะที่รีไซเคิลไม่ได้ ซาเล้งไม่รับ</span>
-                </div>
-            </div>
-            <button type="button" data-modal-close="scheduleOrphanPosterModal" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-200 transition">
-                <i data-lucide="x" class="w-5 h-5"></i>
-            </button>
-        </div>
-        <div class="overflow-y-auto p-2 bg-slate-100 flex items-center justify-center max-h-[70vh]">
-            <img src="<?= htmlspecialchars($baseUrl ?: '') ?>/assets/images/orphan_waste_guide.jpg" alt="ประกาศขยะกำพร้า เทศบาลนครนนทบุรี" class="w-full h-auto rounded-xl shadow-xs">
-        </div>
-        <div class="p-3 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
-            <span class="text-slate-500">สำนักการสาธารณสุขและสิ่งแวดล้อม</span>
-            <button type="button" data-modal-close="scheduleOrphanPosterModal" class="px-5 py-2 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition">
-                ปิดหน้าต่าง
-            </button>
-        </div>
-    </div>
-</div>
 
 <?php
 $viewContent = ob_get_clean();
